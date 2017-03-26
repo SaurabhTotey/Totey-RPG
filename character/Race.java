@@ -15,7 +15,7 @@ public class Race {
 	 * it's only ever used internally
 	 * this was used instead of strings or an infinitely recursive race definition
 	 */
-	private enum raceName{
+	private enum RaceName{
 		HUMAN, ROBOT, SHADOW, TURTLE, BIRD;
 		
 		/**
@@ -32,11 +32,11 @@ public class Race {
 	 * This is a set of static races
 	 * These are five race objects, each has a name, two races they are strong against, and two races they are weak against
 	 */
-	public static Race human = new Race(raceName.HUMAN, raceName.ROBOT, raceName.TURTLE, raceName.SHADOW, raceName.BIRD);
-	public static Race robot = new Race(raceName.ROBOT, raceName.SHADOW, raceName.BIRD, raceName.HUMAN, raceName.TURTLE);
-	public static Race shadow = new Race(raceName.SHADOW, raceName.TURTLE, raceName.HUMAN, raceName.ROBOT, raceName.BIRD);
-	public static Race turtle = new Race(raceName.TURTLE, raceName.BIRD, raceName.ROBOT, raceName.HUMAN, raceName.SHADOW);
-	public static Race bird = new Race(raceName.BIRD, raceName.HUMAN, raceName.SHADOW, raceName.ROBOT, raceName.TURTLE);
+	public static Race human = new Race(RaceName.HUMAN, RaceName.ROBOT, RaceName.TURTLE, RaceName.SHADOW, RaceName.BIRD);
+	public static Race robot = new Race(RaceName.ROBOT, RaceName.SHADOW, RaceName.BIRD, RaceName.HUMAN, RaceName.TURTLE);
+	public static Race shadow = new Race(RaceName.SHADOW, RaceName.TURTLE, RaceName.HUMAN, RaceName.ROBOT, RaceName.BIRD);
+	public static Race turtle = new Race(RaceName.TURTLE, RaceName.BIRD, RaceName.ROBOT, RaceName.HUMAN, RaceName.SHADOW);
+	public static Race bird = new Race(RaceName.BIRD, RaceName.HUMAN, RaceName.SHADOW, RaceName.ROBOT, RaceName.TURTLE);
 	
 	/**
 	 * These are multipliers for damage and other things
@@ -50,9 +50,9 @@ public class Race {
 	 * Instance data for race objects
 	 * these just store the race affinities and race names
 	 */
-	public raceName race;
-	public raceName[] strongAgainst = new raceName[2];
-	public raceName[] weakAgainst = new raceName[2];
+	public RaceName name;
+	public RaceName[] strongAgainst = new RaceName[2];
+	public RaceName[] weakAgainst = new RaceName[2];
 	
 	/**
 	 * A constructor for a simple race object, should never be called outside of this class
@@ -63,8 +63,8 @@ public class Race {
 	 * @param weakAgainst one other race the current race is weak against
 	 * @param secondWeakness a second other race the current race is weak against
 	 */
-	private Race(raceName selfName, raceName strongAgainst, raceName secondStrength, raceName weakAgainst, raceName secondWeakness){
-		this.race = selfName;
+	private Race(RaceName selfName, RaceName strongAgainst, RaceName secondStrength, RaceName weakAgainst, RaceName secondWeakness){
+		this.name = selfName;
 		this.strongAgainst[0] = strongAgainst;
 		this.strongAgainst[1] = secondStrength;
 		this.weakAgainst[0] = weakAgainst;
@@ -81,9 +81,9 @@ public class Race {
 		int multiplier = 1;
 		for(Race opposingRace : opponentRace){
 			for(int i = 0; i < 2; i++){
-				if(opposingRace.race == this.strongAgainst[i]){
+				if(opposingRace.name == this.strongAgainst[i]){
 					multiplier *= strongAgainstMultiplier;
-				}else if(opposingRace.race == this.weakAgainst[i]){
+				}else if(opposingRace.name == this.weakAgainst[i]){
 					multiplier *= weakAgainstMultiplier;
 				}
 			}
