@@ -3,8 +3,8 @@
  */
 package main;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -39,20 +39,13 @@ public class Main {
 		
 		//This part initializes the GUI and sends incoming text to the interpretText funcion
 		this.gui = new display.MainDisplay();
-		this.gui.inputField.addKeyListener(new KeyListener(){
+		this.gui.inputField.addActionListener(new ActionListener(){
 			@Override
-		    public void keyPressed(KeyEvent e){
-				if(e.getKeyCode() == KeyEvent.VK_ENTER){
-					e.consume();
+		    public void actionPerformed(ActionEvent e){
+				if(!gui.inputField.getText().isEmpty()){
 					interpretText(gui.inputField.getText());
 					gui.inputField.setText("");
 				}
-		    }
-		    @Override
-		    public void keyTyped(KeyEvent e) {
-		    }
-		    @Override
-		    public void keyReleased(KeyEvent e) {
 		    }
 		});
 		
