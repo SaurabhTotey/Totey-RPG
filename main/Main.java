@@ -8,6 +8,8 @@ import java.awt.event.KeyListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import display.MainDisplay.optionsPaneMenu;
+
 /**
  * @author Saurabh Totey
  * This class is the entry class of the program
@@ -34,13 +36,15 @@ public class Main {
 	 * this can be serialized and saved to later be resumed
 	 */
 	public Main() throws InterruptedException{
+		
+		//This part initializes the GUI and sends incoming text to the interpretText funcion
 		this.gui = new display.MainDisplay();
 		this.gui.inputField.addKeyListener(new KeyListener(){
 			@Override
 		    public void keyPressed(KeyEvent e){
 				if(e.getKeyCode() == KeyEvent.VK_ENTER){
 					e.consume();
-					getText();
+					interpretText(gui.inputField.getText());
 					gui.inputField.setText("");
 				}
 		    }
@@ -51,13 +55,17 @@ public class Main {
 		    public void keyReleased(KeyEvent e) {
 		    }
 		});
+		
+		//This is where the game actually starts
 		log("You wake up in a vast dank cave. Your head hurts, and you don't remember much. You try to remember your name. You think it might be");
 		while(this.uninterpretedText.isEmpty()){
 			Thread.sleep(15);
 		}
 		String name = uninterpretedText;
-		log("Yes, you remember that your name is " + name + ". Now that you figured that out, you look down at yourself, and are surprised to see that you are a");
+		log("Yes, you remember that your name is \"" + name + "\". Now that you figured that out, you look down at yourself, and are surprised to see that you are a");
 		this.uninterpretedText = "";
+		
+		this.gui.setOptionsPane(optionsPaneMenu.RACES);
 	}
 
 	/**
@@ -80,11 +88,11 @@ public class Main {
 	 * This function handles all incoming text by either saving it as instancedata or by attempting to interpret commands
 	 * @param incoming the text to either save or interpret
 	 */
-	public void getText(){
+	public void interpretText(String incoming){
 		if(this.willInterpretIncoming){
 			//TODO interpret incoming text
 		}else{
-			this.uninterpretedText = this.gui.inputField.getText();
+			this.uninterpretedText = incoming;
 		}
 	}
 

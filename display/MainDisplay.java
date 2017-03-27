@@ -3,6 +3,7 @@
  */
 package display;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -33,7 +34,7 @@ public class MainDisplay {
 	public JFrame frame;
 	public JPanel mainPane;
 	public JPanel optionsPane;
-	public JPanel inventoryPane;
+	public JPanel userPane;
 	public JPanel logPane;
 	public JTextArea logArea;
 	public JTextArea inputField;
@@ -80,23 +81,27 @@ public class MainDisplay {
 		this.frame.add(this.logPane, "dock south, height 25%!");
 		this.redirectSystemStreams();
 		
+		//This code makes the optionspane where all options will be displayed
 		this.optionsPane = new JPanel();
-		JLabel optionsTitle = new JLabel("Options");
-		optionsTitle.setFont(titleFont);
-		optionsTitle.setHorizontalAlignment(SwingConstants.CENTER);
-		this.optionsPane.add(optionsTitle, "dock north");
-		this.frame.add(this.optionsPane, "dock west, width 15%!");
+		this.optionsPane.setBackground(Color.LIGHT_GRAY);
+		this.frame.add(this.optionsPane, "dock west, width 25%!");
+		this.setOptionsPane(optionsPaneMenu.DEFAULT);
 		
-		this.inventoryPane = new JPanel();
-		JLabel invTitle = new JLabel("Inventory");
-		invTitle.setFont(titleFont);
-		invTitle.setHorizontalAlignment(SwingConstants.CENTER);
-		this.inventoryPane.add(invTitle, "dock north");
-		this.frame.add(this.inventoryPane, "dock east, width 15%!");
+		//TODO this part makes a user pane where the user's information will be displayed
+		this.userPane = new JPanel();
+		this.userPane.setBackground(Color.LIGHT_GRAY);
+		JLabel userTitle = new JLabel("Player Info");
+		userTitle.setFont(titleFont);
+		userTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		this.userPane.add(userTitle, "dock north");
+		this.frame.add(this.userPane, "dock east, width 25%!");
 		
+		//This part adds the main pane of the game
+		//All of the main stuff should show up on this pane
 		this.mainPane = new JPanel();
-		this.frame.add(this.mainPane, "grow, push, width 70%!, height 75%!");
+		this.frame.add(this.mainPane, "grow, push, width 50%!, height 75%!");
 		
+		//This part shows the frame and sets the focus to the inputfield
 		this.frame.setVisible(true);
 		this.inputField.requestFocus();
 	}
@@ -133,6 +138,49 @@ public class MainDisplay {
 				logArea.append(text);
 			}
 		});
+	}
+	
+	/**
+	 * This method just refreshes and updates the GUI
+	 */
+	public void refreshGUI(){
+		this.frame.repaint();
+		this.frame.revalidate();
+	}
+	
+	/**
+	 * This is a set of menus of what the optionspane can be set to, the options pane is always one of these
+	 */
+	public enum optionsPaneMenu{
+		DEFAULT("Options"), RACES("Choose race");
+		
+		public String title;
+		
+		/**
+		 * This is the constructor for the possible optionspanes possibilities
+		 * @param title what the optionspane title should be with this specific menu
+		 */
+		private optionsPaneMenu(String title){
+			this.title = title;
+		}
+	}
+	
+	/**
+	 * Sets the option pane to show a certain set of options
+	 * @param type the set of options to display
+	 */
+	public void setOptionsPane(optionsPaneMenu type){
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				optionsPane.removeAll();
+				JLabel optionsTitle = new JLabel(type.title);
+				optionsTitle.setFont(titleFont);
+				optionsTitle.setHorizontalAlignment(SwingConstants.CENTER);
+				optionsPane.add(optionsTitle, "dock north");
+				refreshGUI();
+			}
+		});
+		
 	}
 	
 }
