@@ -16,43 +16,72 @@ public class Character {
 	 * The health, attack, defense, and speed stats are stored as arrays: the first index of the array is the stat's current value, and the second index is the stat's max value
 	 * Every character initially starts off with 0 of each affinity
 	 */
-	public Race race;
+	public Race[] races;
 	public String name = "";
 	private int experience = 0;
-	public int[] health = new int[2];
-	public int[] attack = new int[2];
-	public int[] defense = new int[2];
-	public int[] speed = new int[2];
+	private int[] health = new int[2];
+	private int[] attack = new int[2];
+	private int[] defense = new int[2];
+	private int[] speed = new int[2];
 	public HashMap<Affinity, Integer> affinities = new HashMap<Affinity, Integer>();{
 		for(Affinity affinity : Affinity.values()){
 			affinities.put(affinity, 0);
 		}
 	}
+	public Item armor;
+	public Item pet;
+	public int potions;
 	
 	/**
 	 * The constructor for any character object
 	 * Constructor automatically handles character stats based on given level
 	 * @param name the name of the character
-	 * @param race the character's race
+	 * @param races the character's races
 	 * @param level what level the character should start at (affects stat generation on construction)
 	 */
-	public Character(String name, Race race, int level){
+	public Character(String name, Race[] races, int level){
 		this.name = name;
-		this.race = race;
+		this.races = races;
 		this.experience = (level - 1) * (level - 1) / 4;
-		for(int i = 0; i < getLevel(0); i++){
-			this.gainLevelUpStats();
-		}
+		this.gainLevelUpStats();
+		this.getLevel(0);
 		this.restoreStats();
 	}
 	
 	/**
+	 * This method takes race object(s) and returns a multiplier based on race affinities
+	 * Race affinities are defined above
+	 * @param opponentRaces races to find affinity with and return multiplier for
+	 * @return multiplier for actions used against the races given in parameter
+	 */
+	public int getRaceMultiplierAgainst(Race[] opponentRaces){
+		int multiplier = 1;
+		for(Race opposingRace : opponentRaces){
+			for(Race selfRace : this.races){
+				for(int i = 0; i < 2; i++){
+					if(opposingRace.name == selfRace.strongAgainst[i]){
+						multiplier *= Race.strongAgainstMultiplier;
+					}else if(opposingRace.name == selfRace.weakAgainst[i]){
+						multiplier *= Race.weakAgainstMultiplier;
+					}
+				}
+			}
+		}
+		return multiplier;
+	}
+	
+	/**
 	 * The method adds experience to the character and returns the new level of the character
+	 * If the experience gain was enough to push the character to a new level, it gains stats accordingly
 	 * @param experienceGained how much experience to add to the character
 	 * @return the level of the character after experience gain
 	 */
 	public int getLevel(int experienceGained){
+		int level = (int) (2 * Math.sqrt(this.experience)) + 1;
 		this.experience += experienceGained;
+		for(int i = level; i < (int) (2 * Math.sqrt(this.experience)) + 1; i++){
+			this.gainLevelUpStats();
+		}
 		return (int) (2 * Math.sqrt(this.experience)) + 1;
 	}
 	
@@ -75,4 +104,16 @@ public class Character {
 		defense[0] = defense[1];
 		speed[0] = speed[1];
 	}
+	
+	/**
+	 * Using a potion restores 1/10 of the user's max health and reduces the number of potions the user has
+	 * If the user's use of a potion would put them over maximum health, instead, they are healed to maximum health
+	 */
+	public void usePotion(){
+		if(this.potions > 0){
+			this.health[0] = (this.health[0] + ((int) (this.health[1] / 10)) > health[1])? this.health[1] : (int) (this.health[1] / 10);
+			this.potions--;
+		}
+	}
+
 }

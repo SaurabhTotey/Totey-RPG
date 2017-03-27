@@ -70,25 +70,5 @@ public class Race {
 		this.weakAgainst[0] = weakAgainst;
 		this.weakAgainst[1] = secondWeakness;
 	}
-	
-	/**
-	 * This method takes race object(s) and returns a multiplier based on race affinities
-	 * Race affinities are defined above
-	 * @param opponentRace races to find affinity with and return multiplier for
-	 * @return multiplier for actions used against the races given in parameter
-	 */
-	public int getMultiplierAgainst(Race[] opponentRace){
-		int multiplier = 1;
-		for(Race opposingRace : opponentRace){
-			for(int i = 0; i < 2; i++){
-				if(opposingRace.name == this.strongAgainst[i]){
-					multiplier *= strongAgainstMultiplier;
-				}else if(opposingRace.name == this.weakAgainst[i]){
-					multiplier *= weakAgainstMultiplier;
-				}
-			}
-		}
-		return multiplier;
-	}
 
 }
