@@ -45,10 +45,12 @@ public class Main {
 		//This is where the game actually starts
 		log("You wake up in a vast dank cave. Your head hurts, your vision is blurry, and you don't remember much. You try to remember your name. You think it might be...");
 		String name = this.waitForInput();
+		this.gui.user_name.setText(name);
 		log("Yes, you remember that your name is \"" + name + "\". Now that you figured that out, you look down at yourself, and are surprised to see that you are a...");
 		willInterpretIncoming = true;
 		this.gui.setOptionsPane(optionsPaneMenu.RACES);
 		String race = this.waitForInput();
+		this.gui.user_race.setText(race); //TODO once character constructing is handled, delete this, and instead call this.gui.updatePlayerInfoPane(); to update the player information pane
 		log("Of course! You remembered that you resembled your " + race.substring(0, 1).toLowerCase() + race.substring(1) + " parent mostly. You, however, could not remember the race of your other parent.");
 		this.gui.setOptionsPane(optionsPaneMenu.DEFAULT);
 		//TODO
