@@ -3,6 +3,8 @@
  */
 package character;
 
+import java.util.HashMap;
+
 /**
  * @author Saurabh Totey
  * A class to define a set of specific objects that are attributes for all characters
@@ -26,17 +28,27 @@ public class Race {
 		public String toString(){
 			return super.toString().substring(0, 1).toUpperCase() + super.toString().substring(1).toLowerCase();
 		}
+		
 	}
 	
 	/**
 	 * This is a set of static races
 	 * These are five race objects, each has a name, two races they are strong against, and two races they are weak against
+	 * Below is a hashmap that returns one of the races based on a given string
 	 */
 	public static Race human = new Race(RaceName.HUMAN, RaceName.ROBOT, RaceName.TURTLE, RaceName.SHADOW, RaceName.BIRD);
 	public static Race robot = new Race(RaceName.ROBOT, RaceName.SHADOW, RaceName.BIRD, RaceName.HUMAN, RaceName.TURTLE);
 	public static Race shadow = new Race(RaceName.SHADOW, RaceName.TURTLE, RaceName.HUMAN, RaceName.ROBOT, RaceName.BIRD);
 	public static Race turtle = new Race(RaceName.TURTLE, RaceName.BIRD, RaceName.ROBOT, RaceName.HUMAN, RaceName.SHADOW);
 	public static Race bird = new Race(RaceName.BIRD, RaceName.HUMAN, RaceName.SHADOW, RaceName.ROBOT, RaceName.TURTLE);
+	public static HashMap<String, Race> stringToRace = new HashMap<String, Race>();
+	{
+		stringToRace.put("Human", human);
+		stringToRace.put("Robot", robot);
+		stringToRace.put("Shadow", shadow);
+		stringToRace.put("Turtle", turtle);
+		stringToRace.put("Bird", bird);
+	}
 	
 	/**
 	 * These are multipliers for damage and other things

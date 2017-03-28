@@ -17,7 +17,7 @@ public class Player extends Character {
 	
 	
 	/**
-	 * THIS METHOD IS INCOMPLETE
+	 * TODO THIS METHOD IS INCOMPLETE
 	 * Using a bomb decrements how many bombs the user has, and it destroys part of the maze
 	 */
 	public void useBomb(){
