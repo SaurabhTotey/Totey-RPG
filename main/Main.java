@@ -29,7 +29,7 @@ public class Main {
 	public display.MainDisplay gui;
 	public boolean willInterpretIncoming = false;
 	public String uninterpretedText = "";
-	public Player mainPlayer;
+	public Player mainPlayer = null;
 	
 	/**
 	 * The main object
@@ -43,12 +43,13 @@ public class Main {
 		this.gui = new display.MainDisplay(this);
 		
 		//This is where the game actually starts
-		log("You wake up in a vast dank cave. Your head hurts, your vision is blurry, and you don't remember much. You try to remember your name. You think it might be");
+		log("You wake up in a vast dank cave. Your head hurts, your vision is blurry, and you don't remember much. You try to remember your name. You think it might be...");
 		String name = this.waitForInput();
-		log("Yes, you remember that your name is \"" + name + "\". Now that you figured that out, you look down at yourself, and are surprised to see that you are a");
+		log("Yes, you remember that your name is \"" + name + "\". Now that you figured that out, you look down at yourself, and are surprised to see that you are a...");
+		willInterpretIncoming = true;
 		this.gui.setOptionsPane(optionsPaneMenu.RACES);
 		String race = this.waitForInput();
-		log("Of course! You remembered that you resembled your " + race + " parent mostly. You, however, could not remember the race of your other parent.");
+		log("Of course! You remembered that you resembled your " + race.substring(0, 1).toLowerCase() + race.substring(1) + " parent mostly. You, however, could not remember the race of your other parent.");
 		this.gui.setOptionsPane(optionsPaneMenu.DEFAULT);
 		//TODO
 	}
@@ -90,9 +91,10 @@ public class Main {
 	 * @param incoming the text to either save or interpret
 	 */
 	public void interpretText(String incoming){
-		this.uninterpretedText = incoming;
 		if(this.willInterpretIncoming){
 			//TODO interpret incoming text
+		}else{
+			this.uninterpretedText = incoming;
 		}
 	}
 

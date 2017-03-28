@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -127,6 +126,7 @@ public class MainDisplay {
 				// This part shows the frame and sets the focus to the inputfield
 				frame.setVisible(true);
 				inputField.requestFocus();
+				
 			}
 		});
 	}
@@ -219,8 +219,7 @@ public class MainDisplay {
 							button.addActionListener(new ActionListener(){
 								@Override
 								public void actionPerformed(ActionEvent e){
-									mainGame.willInterpretIncoming = false;
-									mainGame.interpretText(((JButton) e.getSource()).getText());
+									mainGame.uninterpretedText = ((JButton) e.getSource()).getText();
 								}
 							});
 							button.setFont(defaultFont);
@@ -237,6 +236,14 @@ public class MainDisplay {
 				refreshGUI();
 			}
 		});
+	}
+	
+	/**
+	 * Refreshes the player information pane with the newest information
+	 */
+	public void updatePlayerInfoPane(){
+		
+		refreshGUI();
 	}
 
 }
