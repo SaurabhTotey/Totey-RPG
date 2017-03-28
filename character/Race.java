@@ -41,14 +41,7 @@ public class Race {
 	public static Race shadow = new Race(RaceName.SHADOW, RaceName.TURTLE, RaceName.HUMAN, RaceName.ROBOT, RaceName.BIRD);
 	public static Race turtle = new Race(RaceName.TURTLE, RaceName.BIRD, RaceName.ROBOT, RaceName.HUMAN, RaceName.SHADOW);
 	public static Race bird = new Race(RaceName.BIRD, RaceName.HUMAN, RaceName.SHADOW, RaceName.ROBOT, RaceName.TURTLE);
-	public static HashMap<String, Race> stringToRace = new HashMap<String, Race>();
-	{
-		stringToRace.put("Human", human);
-		stringToRace.put("Robot", robot);
-		stringToRace.put("Shadow", shadow);
-		stringToRace.put("Turtle", turtle);
-		stringToRace.put("Bird", bird);
-	}
+	public static HashMap<String, Race> stringToRace = getStringsToRaces();
 	
 	/**
 	 * These are multipliers for damage and other things
@@ -63,6 +56,7 @@ public class Race {
 	 * these just store the race affinities and race names
 	 */
 	public RaceName name;
+	public String stringName;
 	public RaceName[] strongAgainst = new RaceName[2];
 	public RaceName[] weakAgainst = new RaceName[2];
 	
@@ -77,10 +71,25 @@ public class Race {
 	 */
 	private Race(RaceName selfName, RaceName strongAgainst, RaceName secondStrength, RaceName weakAgainst, RaceName secondWeakness){
 		this.name = selfName;
+		this.stringName = name.toString();
 		this.strongAgainst[0] = strongAgainst;
 		this.strongAgainst[1] = secondStrength;
 		this.weakAgainst[0] = weakAgainst;
 		this.weakAgainst[1] = secondWeakness;
+	}
+	
+	/**
+	 * The entry point for the initializing the stringToRace hashmap
+	 * @param args
+	 */
+	public static HashMap<String, Race> getStringsToRaces(){
+		HashMap<String, Race> toReturn = new HashMap<String, Race>();
+		toReturn.put(human.stringName, human);
+		toReturn.put(robot.stringName, robot);
+		toReturn.put(shadow.stringName, shadow);
+		toReturn.put(turtle.stringName, turtle);
+		toReturn.put(bird.stringName, bird);
+		return toReturn;
 	}
 
 }

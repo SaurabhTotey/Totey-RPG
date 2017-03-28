@@ -24,6 +24,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import character.Player;
 import main.Main;
 import net.miginfocom.swing.MigLayout;
 
@@ -367,7 +368,18 @@ public class MainDisplay {
 	 * Refreshes the player information pane with the newest information
 	 */
 	public void updatePlayerInfoPane(){
+		Player player = mainGame.mainPlayer;
 		//TODO get main object's player info and update all the user_ fields
+		if(player != null && player.areStatsVisible){
+			this.user_name.setText(player.name);
+			String raceString = player.races[0].stringName + " / ";
+			raceString += (player.races[1] != null)? player.races[1].stringName : "???";
+			this.user_race.setText(raceString);
+			this.user_health.setText(player.getHealth());
+			this.user_attack.setText(player.getAttack());
+			this.user_defense.setText(player.getDefense());
+			this.user_speed.setText(player.getSpeed());
+		}
 		refreshGUI();
 	}
 

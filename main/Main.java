@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import character.Player;
+import character.Race;
 import display.MainDisplay.optionsPaneMenu;
 
 /**
@@ -50,9 +51,10 @@ public class Main {
 		willInterpretIncoming = true;
 		this.gui.setOptionsPane(optionsPaneMenu.RACES);
 		String race = this.waitForInput();
-		this.gui.user_race.setText(race); //TODO once character constructing is handled, delete this, and instead call this.gui.updatePlayerInfoPane(); to update the player information pane
 		log("Of course! You remembered that you resembled your " + race.substring(0, 1).toLowerCase() + race.substring(1) + " parent mostly. You, however, could not remember the race of your other parent.");
 		this.gui.setOptionsPane(optionsPaneMenu.DEFAULT);
+		mainPlayer = new Player(name, Race.stringToRace.get(race));
+		this.gui.updatePlayerInfoPane();
 		//TODO
 	}
 

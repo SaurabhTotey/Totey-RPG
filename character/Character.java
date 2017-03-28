@@ -16,7 +16,7 @@ public class Character {
 	 * The health, attack, defense, and speed stats are stored as arrays: the first index of the array is the stat's current value, and the second index is the stat's max value
 	 * Every character initially starts off with 0 of each affinity
 	 */
-	public Race[] races;
+	public Race[] races = new Race[2];
 	public String name = "";
 	private int experience = 0;
 	private int[] health = new int[2];
@@ -49,6 +49,23 @@ public class Character {
 	}
 	
 	/**
+	 * The constructor for any character object
+	 * Constructor automatically handles chracter stats based on given level
+	 * This constructor only takes in one race as opposed to an array of races
+	 * @param name the name of the character
+	 * @param race one of the character's races
+	 * @param level what level the character should start at (affects stat generation on construction)
+	 */
+	public Character(String name, Race race, int level){
+		this.name = name;
+		this.races[0] = race;
+		this.experience = (level - 1) * (level - 1) / 4;
+		this.gainLevelUpStats();
+		this.getLevel(0);
+		this.restoreStats();
+	}
+	
+	/**
 	 * This method takes race object(s) and returns a multiplier based on race affinities
 	 * Race affinities are defined above
 	 * @param opponentRaces races to find affinity with and return multiplier for
@@ -59,10 +76,12 @@ public class Character {
 		for(Race opposingRace : opponentRaces){
 			for(Race selfRace : this.races){
 				for(int i = 0; i < 2; i++){
-					if(opposingRace.name == selfRace.strongAgainst[i]){
-						multiplier *= Race.strongAgainstMultiplier;
-					}else if(opposingRace.name == selfRace.weakAgainst[i]){
-						multiplier *= Race.weakAgainstMultiplier;
+					if(opposingRace != selfRace && opposingRace != null && selfRace != null){
+						if(opposingRace.name == selfRace.strongAgainst[i]){
+							multiplier *= Race.strongAgainstMultiplier;
+						}else if(opposingRace.name == selfRace.weakAgainst[i]){
+							multiplier *= Race.weakAgainstMultiplier;
+						}
 					}
 				}
 			}
@@ -114,6 +133,38 @@ public class Character {
 			this.health[0] = (this.health[0] + ((int) (this.health[1] / 10)) > health[1])? this.health[1] : (int) (this.health[1] / 10);
 			this.potions--;
 		}
+	}
+	
+	/**
+	 * Getter method for character health
+	 * @return a string of the user's current health / max health
+	 */
+	public String getHealth(){
+		return this.health[0] + " / " + this.health[1];
+	}
+	
+	/**
+	 * Getter method for character attack
+	 * @return a string of the user's current attack / max attack
+	 */
+	public String getAttack(){
+		return this.attack[0] + " / " + this.attack[1];
+	}
+	
+	/**
+	 * Getter method for character defense
+	 * @return a string of the user's current defense / max defense
+	 */
+	public String getDefense(){
+		return this.defense[0] + " / " + this.defense[1];
+	}
+	
+	/**
+	 * Getter method for character speed
+	 * @return a string of the user's current speed / max speed
+	 */
+	public String getSpeed(){
+		return this.speed[0] + " / " + this.speed[1];
 	}
 
 }

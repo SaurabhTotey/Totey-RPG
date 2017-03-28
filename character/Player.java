@@ -10,9 +10,16 @@ package character;
 public class Player extends Character {
 
 	public int bombs;
+	public boolean areStatsVisible = true;
 	
-	public Player(String name, Race[] races) {
-		super(name, races, 1);
+	/**
+	 * This is the constructor for a player
+	 * It overrides the character constructor because players can only ever be level 1
+	 * @param name
+	 * @param races
+	 */
+	public Player(String name, Race initialRace) {
+		super(name, initialRace, 1);
 	}
 	
 	
