@@ -152,6 +152,7 @@ public class MainDisplay {
 				logArea = new JTextArea();
 				logPane.add(new JScrollPane(logArea), "width 100%, push, grow");
 				inputField = new JTextField();
+				inputField.setFont(defaultFont);
 				inputField.addActionListener(new ActionListener(){
 					@Override
 				    public void actionPerformed(ActionEvent e){
@@ -345,7 +346,7 @@ public class MainDisplay {
 							button.addActionListener(new ActionListener(){
 								@Override
 								public void actionPerformed(ActionEvent e){
-									mainGame.uninterpretedText = ((JButton) e.getSource()).getText();
+									mainGame.interpretText(((JButton) e.getSource()).getText());
 								}
 							});
 							button.setFont(defaultFont);

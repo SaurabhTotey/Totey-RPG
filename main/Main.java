@@ -28,7 +28,7 @@ public class Main {
 	 * This is where all of the core components of the game are kept
 	 */
 	public display.MainDisplay gui;
-	public boolean willInterpretIncoming = false;
+	public boolean willInterpretIncoming = true;
 	public String uninterpretedText = "";
 	public Player mainPlayer = null;
 	
@@ -48,9 +48,14 @@ public class Main {
 		String name = this.waitForInput();
 		this.gui.user_name.setText(name);
 		log("Yes, you remember that your name is \"" + name + "\". Now that you figured that out, you look down at yourself, and are surprised to see that you are a...");
-		willInterpretIncoming = true;
 		this.gui.setOptionsPane(optionsPaneMenu.RACES);
 		String race = this.waitForInput();
+		boolean isValidRace = race.equals("Human") || race.equals("Robot") || race.equals("Shadow") || race.equals("Turtle") || race.equals("Bird");
+		while(!isValidRace){
+			log("You remembered that you were being silly, and that \"" + race + "\" wasn't how \"Human\", \"Robot\", \"Shadow\", \"Turtle\", or \"Bird\" were spelled.");
+			race = this.waitForInput();
+			isValidRace = race.equals("Human") || race.equals("Robot") || race.equals("Shadow") || race.equals("Turtle") || race.equals("Bird");
+		}
 		log("Of course! You remembered that you resembled your " + race.substring(0, 1).toLowerCase() + race.substring(1) + " parent mostly. You, however, could not remember the race of your other parent.");
 		this.gui.setOptionsPane(optionsPaneMenu.DEFAULT);
 		mainPlayer = new Player(name, Race.stringToRace.get(race));
@@ -73,7 +78,7 @@ public class Main {
 	 * @param message the message that is to be logged
 	 */
 	public static void log(String message){
-		System.out.println("[" + new SimpleDateFormat("dd/MM/yy HH:mm:ss").format(Calendar.getInstance().getTime()) + "] : " + message);
+		System.out.println("[" + new SimpleDateFormat("dd/MM/yy HH:mm:ss").format(Calendar.getInstance().getTime()) + "] >>> " + message);
 	}
 	
 	/**
@@ -82,11 +87,13 @@ public class Main {
 	 * @throws InterruptedException
 	 */
 	public String waitForInput() throws InterruptedException{
+		this.willInterpretIncoming = false;
 		while(this.uninterpretedText.isEmpty()){
 			Thread.sleep(15);
 		}
 		String toReturn = this.uninterpretedText;
 		this.uninterpretedText = "";
+		this.willInterpretIncoming = true;
 		return toReturn;
 	}
 	
@@ -97,11 +104,13 @@ public class Main {
 	 * @param incoming the text to either save or interpret
 	 */
 	public void interpretText(String incoming){
+		System.out.println("[" + new SimpleDateFormat("dd/MM/yy HH:mm:ss").format(Calendar.getInstance().getTime()) + "] <<< " + incoming);
 		if(this.willInterpretIncoming){
 			//TODO interpret incoming text and make commands
+			log("Sorry, the command \"" + incoming +  "\" wasn't understood");
 		}else{
 			this.uninterpretedText = incoming;
 		}
 	}
-
+	
 }
