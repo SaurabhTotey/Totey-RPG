@@ -92,11 +92,13 @@ public class Main {
 	
 	/**
 	 * This function handles all incoming text by either saving it as instancedata or by attempting to interpret commands
+	 * This allows for cheaty functionality to those who know the commands
+	 * Mostly used for testing, but it is used for getting text input during certain parts of story
 	 * @param incoming the text to either save or interpret
 	 */
 	public void interpretText(String incoming){
 		if(this.willInterpretIncoming){
-			//TODO interpret incoming text
+			//TODO interpret incoming text and make commands
 		}else{
 			this.uninterpretedText = incoming;
 		}
