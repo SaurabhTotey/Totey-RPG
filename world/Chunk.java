@@ -14,6 +14,7 @@ public class Chunk {
 	 * These are common properties of all of the chunks
 	 * These sets of variables store the location as well as the terrain
 	 */
+	public static int chunkLength;
 	public int x;
 	public int y;
 	public String[] terrain;

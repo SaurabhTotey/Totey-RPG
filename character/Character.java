@@ -100,6 +100,7 @@ public class Character {
 		this.experience += experienceGained;
 		for(int i = level; i < (int) (2 * Math.sqrt(this.experience)) + 1; i++){
 			this.gainLevelUpStats();
+			this.restoreStats();
 		}
 		return (int) (2 * Math.sqrt(this.experience)) + 1;
 	}

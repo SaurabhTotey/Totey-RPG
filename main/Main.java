@@ -5,6 +5,7 @@ package main;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import character.Player;
@@ -30,6 +31,7 @@ public class Main {
 	public display.MainDisplay gui;
 	public boolean willInterpretIncoming = true;
 	public String uninterpretedText = "";
+	public transient ArrayList<String> lastEntered = new ArrayList<String>();
 	public Player mainPlayer = null;
 	
 	/**
@@ -40,12 +42,16 @@ public class Main {
 	 * @throws InvocationTargetException 
 	 */
 	public Main() throws InterruptedException, InvocationTargetException {
+		//This part puts an empty string into the lastEntered, so when the user presses an arrow key, it won't error, but it would rather put an empty string in
+		lastEntered.add("");
+		
 		//This part initializes the GUI and passes itself over to it so it can send this object data
 		this.gui = new display.MainDisplay(this);
 		
 		//This is where the game actually starts
 		log("You wake up in a vast dank cave. Your head hurts, your vision is blurry, and you don't remember much. You try to remember your name. You think it might be...");
-		String name = this.waitForInput();
+		String name;
+		name = this.waitForInput();
 		this.gui.user_name.setText(name);
 		log("Yes, you remember that your name is \"" + name + "\". Now that you figured that out, you look down at yourself, and are surprised to see that you are a...");
 		this.gui.setOptionsPane(optionsPaneMenu.RACES);
@@ -60,7 +66,6 @@ public class Main {
 		this.gui.setOptionsPane(optionsPaneMenu.DEFAULT);
 		mainPlayer = new Player(name, Race.stringToRace.get(race));
 		this.gui.updatePlayerInfoPane();
-		//TODO
 	}
 
 	/**
@@ -71,6 +76,7 @@ public class Main {
 	 */
 	public static void main(String[] args) throws InterruptedException, InvocationTargetException{
 		main = new Main();
+		//TODO
 	}
 	
 	/**
@@ -100,14 +106,19 @@ public class Main {
 	/**
 	 * This function handles all incoming text by either saving it as instancedata or by attempting to interpret commands
 	 * This allows for cheaty functionality to those who know the commands
-	 * Mostly used for testing, but it is used for getting text input during certain parts of story
+	 * Mostly used for testing, but it is used for getting text input during certain parts of story (if you want to do this, use the waitForInput() function, as it correctly calls on this function)
 	 * @param incoming the text to either save or interpret
 	 */
 	public void interpretText(String incoming){
 		System.out.println("[" + new SimpleDateFormat("dd/MM/yy HH:mm:ss").format(Calendar.getInstance().getTime()) + "] <<< " + incoming);
+		this.lastEntered.add(incoming);
 		if(this.willInterpretIncoming){
-			//TODO interpret incoming text and make commands
-			log("Sorry, the command \"" + incoming +  "\" wasn't understood");
+			if(Command.doCommand(incoming)){
+				log("The command was successful!");
+				this.gui.updatePlayerInfoPane();
+			}else{
+				log("Sorry, the command \"" + incoming +  "\" wasn't understood...");
+			}
 		}else{
 			this.uninterpretedText = incoming;
 		}

@@ -9,6 +9,8 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -47,6 +49,11 @@ public class MainDisplay {
 	public Font titleFont;
 	public Font defaultFont;
 	public Main mainGame;
+	
+	/**
+	 * These variables keep track of indexes of user inputs
+	 */
+	public int userLocation;
 	
 	/**
 	 * These are all of the core parts of the User Information pane
@@ -156,11 +163,31 @@ public class MainDisplay {
 				inputField.addActionListener(new ActionListener(){
 					@Override
 				    public void actionPerformed(ActionEvent e){
-						if(!inputField.getText().isEmpty()){
-							mainGame.interpretText(inputField.getText());
-							inputField.setText("");
-						}
+						mainGame.interpretText(inputField.getText());
+						inputField.setText("");
+						userLocation = mainGame.lastEntered.size();
 				    }
+				});
+				inputField.addKeyListener(new KeyListener(){
+					@Override
+					public void keyTyped(KeyEvent e) {}
+					@Override
+					public void keyPressed(KeyEvent e) {
+						try{
+							if(e.getKeyCode() == KeyEvent.VK_DOWN) {
+								inputField.setText(mainGame.lastEntered.get(userLocation + 1));
+								userLocation++;
+				            }else if(e.getKeyCode() == KeyEvent.VK_UP && userLocation > 0){
+				            	inputField.setText(mainGame.lastEntered.get(userLocation - 1));
+								userLocation--;
+				            }
+						}catch(Exception err){
+							inputField.setText("");
+							userLocation = mainGame.lastEntered.size();
+						}
+					}
+					@Override
+					public void keyReleased(KeyEvent e) {}
 				});
 				logPane.add(inputField, "width 100%!, dock south");
 				logArea.setFont(defaultFont);
@@ -332,6 +359,7 @@ public class MainDisplay {
 					case DEFAULT:
 						//TODO add default menu
 						JButton invButton = new JButton("Open Inventory");
+						invButton.setFont(defaultFont);
 						invButton.addActionListener(new ActionListener(){
 							@Override
 							public void actionPerformed(ActionEvent e){
