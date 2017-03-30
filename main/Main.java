@@ -5,7 +5,6 @@ package main;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 
 import character.Player;
@@ -31,8 +30,8 @@ public class Main {
 	public display.MainDisplay gui;
 	public boolean willInterpretIncoming = true;
 	public String uninterpretedText = "";
-	public transient ArrayList<String> lastEntered = new ArrayList<String>();
 	public Player mainPlayer = null;
+	public boolean testingMode = true;
 	
 	/**
 	 * The main object
@@ -42,9 +41,6 @@ public class Main {
 	 * @throws InvocationTargetException 
 	 */
 	public Main() throws InterruptedException, InvocationTargetException {
-		//This part puts an empty string into the lastEntered, so when the user presses an arrow key, it won't error, but it would rather put an empty string in
-		lastEntered.add("");
-		
 		//This part initializes the GUI and passes itself over to it so it can send this object data
 		this.gui = new display.MainDisplay(this);
 		
@@ -105,19 +101,18 @@ public class Main {
 	
 	/**
 	 * This function handles all incoming text by either saving it as instancedata or by attempting to interpret commands
-	 * This allows for cheaty functionality to those who know the commands
+	 * This allows for cheaty functionality to those who know the commands and are on testing mode
 	 * Mostly used for testing, but it is used for getting text input during certain parts of story (if you want to do this, use the waitForInput() function, as it correctly calls on this function)
 	 * @param incoming the text to either save or interpret
 	 */
 	public void interpretText(String incoming){
 		System.out.println("[" + new SimpleDateFormat("dd/MM/yy HH:mm:ss").format(Calendar.getInstance().getTime()) + "] <<< " + incoming);
-		this.lastEntered.add(incoming);
 		if(this.willInterpretIncoming){
 			if(Command.doCommand(incoming)){
 				log("The command was successful!");
 				this.gui.updatePlayerInfoPane();
 			}else{
-				log("Sorry, the command \"" + incoming +  "\" wasn't understood...");
+				log("Sorry, the command \"" + incoming +  "\" wasn't understood. Maybe try the 'help' command...");
 			}
 		}else{
 			this.uninterpretedText = incoming;

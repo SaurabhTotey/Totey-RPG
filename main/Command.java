@@ -5,10 +5,15 @@ package main;
 
 import java.util.HashMap;
 
+import character.Race;
+
 /**
  * @author Saurabh Totey
  * A class that has commands
- * It does nothing on its own, but it has subclasses for commands
+ * It does nothing on its own in terms of a command, but it has subclasses for commands and handles constuction features of all subcommands
+ * Each of the command subclasses have specific actions they fulfill
+ * Some of the commands are only for testing purposes, and can't be used otherwise
+ * TODO add more commands
  */
 public class Command {
 	
@@ -30,7 +35,7 @@ public class Command {
 	 */
 	public Command(String commandName) {
 		this.commandName = commandName;
-		allCommands.put(commandName, this);
+		allCommands.putIfAbsent(commandName, this);
 	}
 	
 	/**
@@ -51,13 +56,41 @@ public class Command {
 	 */
 	public static boolean doCommand(String command){
 		Command emptyCommand = new Command("doNothing");
-		emptyCommand.new gainExperience();
+		allCommands.remove("doNothing", emptyCommand);
+		emptyCommand.new help();
+		if(Main.main.testingMode){
+			emptyCommand.new refresh();
+			emptyCommand.new gainExperience();
+			emptyCommand.new setRace();
+			emptyCommand.new buffStats();
+		}
 		String[] args = command.split(" ");
 		try{
 			allCommands.get(args[0]).executeCommand(args);
 			return true;
 		}catch(Exception e){
 			return false;
+		}
+	}
+	
+	/**
+	 * The command to view all existing commands
+	 * USAGE: "help"
+	 */
+	public class help extends Command{
+		public help() {
+			super("help");
+		}
+		@Override
+		public void executeCommand(String[] command){
+			super.executeCommand(command);
+			int i = 0;
+			String output = "Displaying All Available Commands\n";
+			for(String commandName : allCommands.keySet()){
+				output += i + " : " + commandName + "\n";
+				i++;
+			}
+			Main.log(output.substring(0, output.length() - 1));
 		}
 	}
 	
@@ -88,6 +121,36 @@ public class Command {
 		public void executeCommand(String[] command){
 			super.executeCommand(command);
 			Main.main.mainPlayer.getLevel(Integer.parseInt(command[1]));
+		}
+	}
+	
+	/**
+	 * The command to set or change the user's current race
+	 * USAGE: "setRace [raceNumber] [race]"
+	 */
+	public class setRace extends Command{
+		public setRace() {
+			super("setRace");
+		}
+		@Override
+		public void executeCommand(String[] command){
+			super.executeCommand(command);
+			Main.main.mainPlayer.races[Integer.parseInt(command[1])] = Race.stringToRace.get(command[2]);
+		}
+	}
+	
+	/**
+	 * The command to buff the user's stats
+	 * USAGE: "buffStats [buffFactor]"
+	 */
+	public class buffStats extends Command{
+		public buffStats() {
+			super("buffStats");
+		}
+		@Override
+		public void executeCommand(String[] command){
+			super.executeCommand(command);
+			Main.main.mainPlayer.gainLevelUpStats();
 		}
 	}
 

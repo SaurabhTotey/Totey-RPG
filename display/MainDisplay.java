@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -52,8 +54,10 @@ public class MainDisplay {
 	
 	/**
 	 * These variables keep track of indexes of user inputs
+	 * This allows the user to traverse their previous inputs with arrow keys
 	 */
 	public int userLocation;
+	public ArrayList<String> lastEntered = new ArrayList<String>();
 	
 	/**
 	 * These are all of the core parts of the User Information pane
@@ -164,8 +168,9 @@ public class MainDisplay {
 					@Override
 				    public void actionPerformed(ActionEvent e){
 						mainGame.interpretText(inputField.getText());
+						lastEntered.add(inputField.getText());
 						inputField.setText("");
-						userLocation = mainGame.lastEntered.size();
+						userLocation = lastEntered.size();
 				    }
 				});
 				inputField.addKeyListener(new KeyListener(){
@@ -175,15 +180,15 @@ public class MainDisplay {
 					public void keyPressed(KeyEvent e) {
 						try{
 							if(e.getKeyCode() == KeyEvent.VK_DOWN) {
-								inputField.setText(mainGame.lastEntered.get(userLocation + 1));
+								inputField.setText(lastEntered.get(userLocation + 1));
 								userLocation++;
 				            }else if(e.getKeyCode() == KeyEvent.VK_UP && userLocation > 0){
-				            	inputField.setText(mainGame.lastEntered.get(userLocation - 1));
+				            	inputField.setText(lastEntered.get(userLocation - 1));
 								userLocation--;
 				            }
 						}catch(Exception err){
 							inputField.setText("");
-							userLocation = mainGame.lastEntered.size();
+							userLocation = lastEntered.size();
 						}
 					}
 					@Override
