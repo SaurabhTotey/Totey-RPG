@@ -24,23 +24,40 @@ public class Command {
 	public static HashMap<String, Command> allCommands = new HashMap<String, Command>();
 	
 	/**
-	 * The name of the command
+	 * The name of the command and its parameters and its description
 	 * If a called command doesn't match this name, the command doesn't execute
 	 */
 	public String commandName;
+	public String params;
+	public String description;
 
 	/**
-	 * The command constructor
-	 * This one does nothing except set its name and put itself in the list of all commands
+	 * The basic command constructor
+	 * This one does nothing except set its name and put itself in the list of all commands and sets its parameters
+	 * @param commandName the name of the command
+	 * @param description what the command does
+	 * @param parameters the parameters for the command
 	 */
-	public Command(String commandName) {
+	public Command(String commandName, String description, String parameters) {
 		this.commandName = commandName;
 		allCommands.putIfAbsent(commandName, this);
+		this.params = parameters;
+		this.description = description;
+	}
+	
+	/**
+	 * This is the constructor used if there are no parameters
+	 * @param commandName the name of the command
+	 * @param description what the command does
+	 */
+	public Command(String commandName, String description){
+		this(commandName, description, null);
 	}
 	
 	/**
 	 * This is a method that executes the class's command
 	 * It doesn't do anything except check that the first parameter of the command is the commandname
+	 * @param command an array of all of the parts of the command split by words
 	 */
 	public void executeCommand(String[] command){
 		if(!command[0].equals(this.commandName)){
@@ -55,7 +72,7 @@ public class Command {
 	 * @return whether the command successfully executed or not
 	 */
 	public static boolean doCommand(String command){
-		Command emptyCommand = new Command("doNothing");
+		Command emptyCommand = new Command("doNothing", "Does nothing.");
 		allCommands.remove("doNothing", emptyCommand);
 		emptyCommand.new help();
 		if(Main.main.testingMode){
@@ -79,18 +96,24 @@ public class Command {
 	 */
 	public class help extends Command{
 		public help() {
-			super("help");
+			super("help", "Displays available commands");
 		}
 		@Override
 		public void executeCommand(String[] command){
 			super.executeCommand(command);
 			int i = 0;
-			String output = "Displaying All Available Commands\n";
+			String output = "\n\nDisplaying All Available Commands\n\n";
 			for(String commandName : allCommands.keySet()){
-				output += i + " : " + commandName + "\n";
+				output += i + " : " + commandName;
+				if(allCommands.get(commandName).params != null){
+					for(String parameter : allCommands.get(commandName).params.split(", ")){
+						output += " [" + parameter + "]";
+					}
+				}
+				output += " -> " + allCommands.get(commandName).description + "\n";
 				i++;
 			}
-			Main.log(output.substring(0, output.length() - 1));
+			Main.log(output);
 		}
 	}
 	
@@ -100,7 +123,7 @@ public class Command {
 	 */
 	public class refresh extends Command{
 		public refresh() {
-			super("refresh");
+			super("refresh", "Sets your current stats to your maximum stats");
 		}
 		@Override
 		public void executeCommand(String[] command){
@@ -115,7 +138,7 @@ public class Command {
 	 */
 	public class gainExperience extends Command{
 		public gainExperience() {
-			super("gainExperience");
+			super("gainExperience", "Gives you however much experience you want", "desired experience");
 		}
 		@Override
 		public void executeCommand(String[] command){
@@ -130,7 +153,7 @@ public class Command {
 	 */
 	public class setRace extends Command{
 		public setRace() {
-			super("setRace");
+			super("setRace", "Sets your race to whatever you want (if it is spelled right)", "race slot, desired race");
 		}
 		@Override
 		public void executeCommand(String[] command){
@@ -145,7 +168,7 @@ public class Command {
 	 */
 	public class buffStats extends Command{
 		public buffStats() {
-			super("buffStats");
+			super("buffStats", "Gives you stats as if you had levelled up as many times as you command", "buff magnitude");
 		}
 		@Override
 		public void executeCommand(String[] command){
