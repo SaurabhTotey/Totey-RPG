@@ -178,18 +178,16 @@ public class MainDisplay {
 					public void keyTyped(KeyEvent e) {}
 					@Override
 					public void keyPressed(KeyEvent e) {
-						try{
-							if(e.getKeyCode() == KeyEvent.VK_DOWN) {
-								inputField.setText(lastEntered.get(userLocation + 1));
-								userLocation++;
-				            }else if(e.getKeyCode() == KeyEvent.VK_UP && userLocation > 0){
-				            	inputField.setText(lastEntered.get(userLocation - 1));
-								userLocation--;
-				            }
-						}catch(Exception err){
-							inputField.setText("");
-							userLocation = lastEntered.size();
-						}
+						if(e.getKeyCode() == KeyEvent.VK_DOWN && userLocation < lastEntered.size() - 1) {
+							inputField.setText(lastEntered.get(userLocation + 1));
+							userLocation++;
+				        }else if(e.getKeyCode() == KeyEvent.VK_UP && userLocation > 0){
+				           	inputField.setText(lastEntered.get(userLocation - 1));
+							userLocation--;
+				        }else if(e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP){
+				        	inputField.setText("");
+				        	userLocation = (e.getKeyCode() == KeyEvent.VK_DOWN)? lastEntered.size() : -1;
+				        }
 					}
 					@Override
 					public void keyReleased(KeyEvent e) {}

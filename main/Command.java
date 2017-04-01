@@ -150,7 +150,15 @@ public class Command {
 		@Override
 		public void executeCommand(String[] command){
 			super.executeCommand(command);
-			Main.main.mainPlayer.gainLevelUpStats();
+			int runNum = 1;
+			try{
+				runNum = Integer.parseInt(command[1]);
+			}catch(Exception e){
+				
+			}
+			for(int i = 0; i < runNum; i++){
+				Main.main.mainPlayer.gainLevelUpStats();
+			}
 		}
 	}
 

@@ -29,7 +29,7 @@ public class Main {
 	 */
 	public display.MainDisplay gui;
 	public boolean willInterpretIncoming = true;
-	public String uninterpretedText = "";
+	public String uninterpretedText = null;
 	public Player mainPlayer = null;
 	public boolean testingMode = true;
 	
@@ -47,15 +47,15 @@ public class Main {
 		//This is where the game actually starts
 		log("You wake up in a vast dank cave. Your head hurts, your vision is blurry, and you don't remember much. You try to remember your name. You think it might be...");
 		String name;
-		name = this.waitForInput();
+		name = this.waitForInput(false);
 		this.gui.user_name.setText(name);
 		log("Yes, you remember that your name is \"" + name + "\". Now that you figured that out, you look down at yourself, and are surprised to see that you are a...");
 		this.gui.setOptionsPane(optionsPaneMenu.RACES);
-		String race = this.waitForInput();
+		String race = this.waitForInput(false);
 		boolean isValidRace = race.equals("Human") || race.equals("Robot") || race.equals("Shadow") || race.equals("Turtle") || race.equals("Bird");
 		while(!isValidRace){
 			log("You remembered that you were being silly, and that \"" + race + "\" wasn't how \"Human\", \"Robot\", \"Shadow\", \"Turtle\", or \"Bird\" were spelled.");
-			race = this.waitForInput();
+			race = this.waitForInput(false);
 			isValidRace = race.equals("Human") || race.equals("Robot") || race.equals("Shadow") || race.equals("Turtle") || race.equals("Bird");
 		}
 		log("Of course! You remembered that you resembled your " + race.substring(0, 1).toLowerCase() + race.substring(1) + " parent mostly. You, however, could not remember the race of your other parent.");
@@ -88,13 +88,13 @@ public class Main {
 	 * @return gives back the string of what the main thread was waiting for
 	 * @throws InterruptedException
 	 */
-	public String waitForInput() throws InterruptedException{
+	public String waitForInput(boolean willAllowEmptyInput) throws InterruptedException{
 		this.willInterpretIncoming = false;
-		while(this.uninterpretedText.isEmpty()){
+		while(this.uninterpretedText == null || !willAllowEmptyInput && this.uninterpretedText.isEmpty()){
 			Thread.sleep(15);
 		}
 		String toReturn = this.uninterpretedText;
-		this.uninterpretedText = "";
+		this.uninterpretedText = null;
 		this.willInterpretIncoming = true;
 		return toReturn;
 	}
