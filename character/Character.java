@@ -3,8 +3,6 @@
  */
 package character;
 
-import java.util.HashMap;
-
 /**
  * @author Saurabh Totey
  * A class of all characters (players, enemies, bosses, etc) with all their common attributes
@@ -23,11 +21,7 @@ public class Character {
 	private int[] attack = new int[2];
 	private int[] defense = new int[2];
 	private int[] speed = new int[2];
-	public HashMap<Affinity, Integer> affinities = new HashMap<Affinity, Integer>();{
-		for(Affinity affinity : Affinity.values()){
-			affinities.put(affinity, 0);
-		}
-	}
+	public Affinity[] affinities = Affinity.makeAffinities();
 	public Item armor;
 	public Item pet;
 	public int potions;
