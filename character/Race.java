@@ -79,8 +79,17 @@ public class Race {
 	}
 	
 	/**
+	 * To string method for getting race as a string
+	 * @return the race as a string
+	 */
+	@Override
+	public String toString(){
+		return this.name.toString();
+	}
+	
+	/**
 	 * The entry point for the initializing the stringToRace hashmap
-	 * @param args
+	 * If a new race is added, to add a string value to it, it needs to be put here
 	 */
 	public static HashMap<String, Race> getStringsToRaces(){
 		HashMap<String, Race> toReturn = new HashMap<String, Race>();
