@@ -12,7 +12,7 @@ import java.util.HashMap;
  * Each chunk of the maze gets saved so that the user can re-explore previously viewed areas
  * The maze object handles its generation as well as chunks and keeping track of movement
  */
-public class Maze {
+public class Maze extends HashMap<String, Chunk>{
 	
 	/**
 	 * These are all of the movable and generatable directions
@@ -26,7 +26,7 @@ public class Maze {
 		
 		/**
 		 * The constructor for a direction
-		 * It contains the newer position relative to the original position if the direction is used
+		 * It contains the newer position relative to the original position if the direction is used in terms of (x, y)
 		 * (eg. UP from (5, 3) would (5 + xModifier, 3 + yModifier) -> (5 + 0, 3 + 1) -> (5, 4)
 		 * @param xModifier the newer x position relative to the original x position
 		 * @param yModifier the newer y position relative to the original y position
@@ -38,28 +38,50 @@ public class Maze {
 	}
 	
 	/**
-	 * Properties of the maze
-	 * Each chunk is stored in a hashmap with the String key being "[x], [y]" and the chunk being the output
-	 * This way chunks can easily be accessed without having to manually iterate through lists
+	 * Properties of the maze such as how things would be represented
 	 */
 	public static int displayWidth = 40;
 	public static int displayHeight = 20;
-	public HashMap<String, Chunk> mazeChunks = new HashMap<String, Chunk>();
+	public static String emptyTile = "□"; //TODO pass different on/off tiles to chunks based on distance from center
+	public static String wallTile = "■";
+	public static String playerTile = "P";
+	public static String enemyTile = "E";
+	public static String portalTile = "O";
+	public static String itemTile = "I";
+	public static String villageTile = "V";
 	
 	/**
 	 * Constructs the maze object for the player to explore
 	 * TODO make this
 	 */
 	public Maze(){
-		
+		super();
 	}
 	
 	/**
 	 * Generates a chunk object and adds it the maze
+	 * Each chunk is stored in a hashmap with the String key being "[x], [y]" and the chunk being the output
+	 * This way chunks can easily be accessed without having to manually iterate through lists
 	 * TODO make this
 	 */
 	public void generateChunk(int x, int y){
-		
+		HashMap<Direction, Chunk> touching = new HashMap<Direction, Chunk>();
+		touching.put(Direction.UP, this.get(x + ", " + (y + 1)));
+		touching.put(Direction.DOWN, this.get(x + ", " + (y - 1)));
+		touching.put(Direction.LEFT, this.get((x - 1) + ", " + y));
+		touching.put(Direction.RIGHT, this.get((x + 1) + ", " + y));
+		HashMap<Direction, int[]> needToTouch = new HashMap<Direction, int[]>();
+		for(Direction direction : touching.keySet()){
+			if(touching.get(direction) != null){
+				for(int i = 0; i < Chunk.chunkLength; i++){
+					int[] tempNeedToTouch = new int[2];
+					tempNeedToTouch[0] = direction.xModifier * i;
+					tempNeedToTouch[1] = direction.yModifier * i;
+					needToTouch.put(direction, tempNeedToTouch);
+				}
+			}
+		}
+		this.put(x + ", " + y, null);
 	}
 	 
 	/**

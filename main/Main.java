@@ -7,7 +7,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import character.Enemy;
 import character.Player;
 import character.Race;
 import display.MainDisplay.optionsPaneMenu;
@@ -72,9 +71,6 @@ public class Main {
 	 * @throws InvocationTargetException 
 	 */
 	public static void main(String[] args) throws InterruptedException, InvocationTargetException{
-		for(int i = 0; i < 10; i++){
-			System.out.println("THIS IS A TEST: " + Enemy.makeRandomName() + " HAS A RACE OF " + Enemy.getRandomRace().toString());
-		}
 		main = new Main();
 		//TODO
 	}

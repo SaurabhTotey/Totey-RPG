@@ -26,7 +26,7 @@ public class Enemy extends Character {
 	 * It doesn't work very well and the names come out very alien
 	 * Yet it is still a way to generate random names
 	 * Is needed for making random enemies that have some name
-	 * TODO make this better
+	 * TODO use a try catch with a https://randomuser.me parsing json in try, and catch doing my shitty version
 	 * @return a random name
 	 */
 	public static String makeRandomName(){

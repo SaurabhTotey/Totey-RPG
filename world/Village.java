@@ -20,8 +20,19 @@ public class Village extends Chunk {
 	 * it adds extra features and is generally more useful to the player (and thus more rare)
 	 * TODO make this
 	 */
-	public Village(){
-		
+	public Village(int x, int y, String emptyTile, String wallTile){
+		super(makeVillage(emptyTile, wallTile), x, y, emptyTile, wallTile);
+	}
+	
+	/**
+	 * Makes village terrain
+	 * @param emptyTile
+	 * @param wallTile
+	 * @return
+	 */
+	private static String[] makeVillage(String emptyTile, String wallTile){
+		String[] villageAppearance = null; //TODO
+		return villageAppearance;
 	}
 
 }
