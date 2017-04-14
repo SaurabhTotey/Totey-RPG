@@ -17,7 +17,7 @@ public class Chunk {
 	public static int chunkLength = 50;
 	public int x;
 	public int y;
-	public String[] terrain;
+	public String[][] terrain;
 	public String emptyTile;
 	public String wallTile;
 
@@ -26,7 +26,7 @@ public class Chunk {
 	 * The objects just store their x and y locations as well as their actual terrain
 	 * TODO make this
 	 */
-	public Chunk(String[] terrain, int x, int y, String emptyTile, String wallTile) {
+	public Chunk(String[][] terrain, int x, int y, String emptyTile, String wallTile) {
 		this.terrain = terrain;
 		this.x = x;
 		this.y = y;

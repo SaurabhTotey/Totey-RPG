@@ -3,6 +3,7 @@
  */
 package world;
 
+import java.awt.Point;
 import java.util.HashMap;
 
 /**
@@ -19,7 +20,7 @@ public class Maze extends HashMap<String, Chunk>{
 	 * @author Saurabh Totey
 	 */
 	public enum Direction{
-		UP(0, 1), RIGHT(1, 0), LEFT(-1, 0), DOWN(0, -1);
+		UP(0, -1), RIGHT(1, 0), LEFT(-1, 0), DOWN(0, 1);
 		
 		public int xModifier;
 		public int yModifier;
@@ -70,14 +71,11 @@ public class Maze extends HashMap<String, Chunk>{
 		touching.put(Direction.DOWN, this.get(x + ", " + (y - 1)));
 		touching.put(Direction.LEFT, this.get((x - 1) + ", " + y));
 		touching.put(Direction.RIGHT, this.get((x + 1) + ", " + y));
-		HashMap<Direction, int[]> needToTouch = new HashMap<Direction, int[]>();
-		for(Direction direction : touching.keySet()){
-			if(touching.get(direction) != null){
-				for(int i = 0; i < Chunk.chunkLength; i++){
-					int[] tempNeedToTouch = new int[2];
-					tempNeedToTouch[0] = direction.xModifier * i;
-					tempNeedToTouch[1] = direction.yModifier * i;
-					needToTouch.put(direction, tempNeedToTouch);
+		HashMap<Direction, Point> needToTouch = new HashMap<Direction, Point>();
+		for(Direction direction : Direction.values()){
+			for(int i = 0; i < Chunk.chunkLength; i++){
+				if(touching.get(direction) != null && touching.get(direction).terrain[Math.abs(direction.xModifier) * (-i) + i + (-1 + direction.xModifier) * direction.xModifier * Chunk.chunkLength / 2][Math.abs(direction.yModifier) * (-i) + i + (-1 + direction.yModifier) * direction.yModifier * Chunk.chunkLength / 2].equals(touching.get(direction).emptyTile)){
+					needToTouch.put(direction, new Point(Math.abs(direction.xModifier) * (-i) + i + (-1 + direction.xModifier) * direction.xModifier * Chunk.chunkLength / 2, Math.abs(direction.yModifier) * (-i) + i + (-1 + direction.yModifier) * direction.yModifier * Chunk.chunkLength / 2));
 				}
 			}
 		}

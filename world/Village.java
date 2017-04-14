@@ -30,8 +30,8 @@ public class Village extends Chunk {
 	 * @param wallTile
 	 * @return
 	 */
-	private static String[] makeVillage(String emptyTile, String wallTile){
-		String[] villageAppearance = null; //TODO
+	private static String[][] makeVillage(String emptyTile, String wallTile){
+		String[][] villageAppearance = null; //TODO
 		return villageAppearance;
 	}
 
