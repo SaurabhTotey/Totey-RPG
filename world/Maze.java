@@ -4,6 +4,7 @@
 package world;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -66,6 +67,7 @@ public class Maze extends HashMap<String, Chunk>{
 	 * TODO make this
 	 */
 	public void generateChunk(int x, int y){
+		//Gets the parts of the adjacent chunks the new chunk should touch
 		HashMap<Direction, Chunk> touching = new HashMap<Direction, Chunk>();
 		touching.put(Direction.UP, this.get(x + ", " + (y + 1)));
 		touching.put(Direction.DOWN, this.get(x + ", " + (y - 1)));
@@ -74,12 +76,54 @@ public class Maze extends HashMap<String, Chunk>{
 		HashMap<Direction, Point> needToTouch = new HashMap<Direction, Point>();
 		for(Direction direction : Direction.values()){
 			for(int i = 0; i < Chunk.chunkLength; i++){
-				if(touching.get(direction) != null && touching.get(direction).terrain[Math.abs(direction.xModifier) * (-i) + i + (-1 + direction.xModifier) * direction.xModifier * Chunk.chunkLength / 2][Math.abs(direction.yModifier) * (-i) + i + (-1 + direction.yModifier) * direction.yModifier * Chunk.chunkLength / 2].equals(touching.get(direction).emptyTile)){
+				if(touching == null || touching.get(direction).terrain[Math.abs(direction.xModifier) * (-i) + i + (-1 + direction.xModifier) * direction.xModifier * Chunk.chunkLength / 2][Math.abs(direction.yModifier) * (-i) + i + (-1 + direction.yModifier) * direction.yModifier * Chunk.chunkLength / 2].equals(touching.get(direction).emptyTile)){
 					needToTouch.put(direction, new Point(Math.abs(direction.xModifier) * (-i) + i + (-1 + direction.xModifier) * direction.xModifier * Chunk.chunkLength / 2, Math.abs(direction.yModifier) * (-i) + i + (-1 + direction.yModifier) * direction.yModifier * Chunk.chunkLength / 2));
 				}
 			}
 		}
-		this.put(x + ", " + y, null);
+		int chunkType = (int) (Math.random() * 501);
+		String[][] terrain = new String[Chunk.chunkLength][Chunk.chunkLength];
+		for(int i = 0; i < Chunk.chunkLength; i++){
+			for(int j = 0; j < Chunk.chunkLength; j++){
+				terrain[i][j] = wallTile;
+			}
+		}
+		if(chunkType >= 3){			//Gens normal chunk
+			boolean touchesAllAdjacent;
+			ArrayList<Point> branchCoords = new ArrayList<Point>();
+			ArrayList<Point> edgeCoords = new ArrayList<Point>();
+			branchCoords.add(new Point(Chunk.chunkLength / 2, Chunk.chunkLength / 2));
+			do{
+				Point placeToStart = branchCoords.get((int) (Math.random() * branchCoords.size()));
+				Direction directionToGo = Direction.values()[(int) (Math.random() * Direction.values().length)];
+				int distanceFromStart = 0;
+				while(Math.random() > 0.3){
+					Point newLocationCoords = new Point((int) (placeToStart.getX() + directionToGo.xModifier * distanceFromStart), (int) (placeToStart.getY() + directionToGo.yModifier * distanceFromStart));
+					if(newLocationCoords.getX() < Chunk.chunkLength && newLocationCoords.getY() < Chunk.chunkLength && newLocationCoords.getX() >= 0 && newLocationCoords.getY() >= 0){
+						terrain[(int) newLocationCoords.getX()][(int) newLocationCoords.getY()] = emptyTile;
+						if(Math.random() < 0.15){
+							branchCoords.add((Point) newLocationCoords.clone());
+							//add break here?
+						}
+						if(newLocationCoords.getX() == Chunk.chunkLength || newLocationCoords.getX() == 0 || newLocationCoords.getY() == Chunk.chunkLength || newLocationCoords.getY() == 0){
+							edgeCoords.add((Point) newLocationCoords.clone());
+						}
+						distanceFromStart++;
+					}else{
+						break;
+					}
+				}
+				touchesAllAdjacent = true;
+				//evaluate touchesAllAdjacent with edgeCoords and needToTouch by making sure there is a matching edgeCoord for each direction in needToTouch
+			}while(!touchesAllAdjacent);
+		}else if(chunkType == 2){	//Gens boss chunk
+			
+		}else if(chunkType == 1){	//Gens item chunk
+			
+		}else if(chunkType == 0){	//Gens village
+			
+		}
+		this.put(x + ", " + y, new Chunk(terrain, x, y, emptyTile, wallTile));
 	}
 	 
 	/**
@@ -99,6 +143,16 @@ public class Maze extends HashMap<String, Chunk>{
 	 * @param direction where to move the player, or the opposite of which direction to move the map
 	 */
 	public void move(Direction direction){
+		
+	}
+	
+	/**
+	 * Sends the player to a certain chunk
+	 * Always puts the player in the center of the chunk
+	 * @param xChunk the x-coordinate of the chunk to send the player
+	 * @param yChunk the y-coordinate of the chunk to send the player
+	 */
+	public void setCoords(int xChunk, int yChunk){
 		
 	}
 
