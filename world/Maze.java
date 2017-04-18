@@ -5,7 +5,9 @@ package world;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * @author Saurabh Totey
@@ -48,9 +50,10 @@ public class Maze extends HashMap<String, Chunk>{
 	public static String wallTile = "■";
 	public static String playerTile = "P";
 	public static String enemyTile = "E";
+	public static String bossTile = "B";
 	public static String portalTile = "O";
 	public static String itemTile = "I";
-	public static String villageTile = "V";
+	public static String villagerTile = "V";
 	
 	/**
 	 * Constructs the maze object for the player to explore
@@ -58,6 +61,11 @@ public class Maze extends HashMap<String, Chunk>{
 	 */
 	public Maze(){
 		super();
+		for(int i = 0; i < Chunk.chunkLength / 5; i++){
+			for(int j = 0; j < Chunk.chunkLength / 5; j++){
+				this.generateChunk(i, j);
+			}
+		}
 	}
 	
 	/**
@@ -73,11 +81,12 @@ public class Maze extends HashMap<String, Chunk>{
 		touching.put(Direction.DOWN, this.get(x + ", " + (y - 1)));
 		touching.put(Direction.LEFT, this.get((x - 1) + ", " + y));
 		touching.put(Direction.RIGHT, this.get((x + 1) + ", " + y));
-		HashMap<Direction, Point> needToTouch = new HashMap<Direction, Point>();
+		HashMap<Direction, ArrayList<Point>> needToTouch = new HashMap<Direction, ArrayList<Point>>();
 		for(Direction direction : Direction.values()){
+			needToTouch.put(direction, new ArrayList<Point>());
 			for(int i = 0; i < Chunk.chunkLength; i++){
-				if(touching == null || touching.get(direction).terrain[Math.abs(direction.xModifier) * (-i) + i + (-1 + direction.xModifier) * direction.xModifier * Chunk.chunkLength / 2][Math.abs(direction.yModifier) * (-i) + i + (-1 + direction.yModifier) * direction.yModifier * Chunk.chunkLength / 2].equals(touching.get(direction).emptyTile)){
-					needToTouch.put(direction, new Point(Math.abs(direction.xModifier) * (-i) + i + (-1 + direction.xModifier) * direction.xModifier * Chunk.chunkLength / 2, Math.abs(direction.yModifier) * (-i) + i + (-1 + direction.yModifier) * direction.yModifier * Chunk.chunkLength / 2));
+				if(touching.get(direction) == null || isTraversable(touching.get(direction).terrain[Math.abs(direction.xModifier) * (-i) + i + (-1 + direction.xModifier) * direction.xModifier * (Chunk.chunkLength - 1) / 2][Math.abs(direction.yModifier) * (-i) + i + (-1 + direction.yModifier) * direction.yModifier * (Chunk.chunkLength - 1) / 2])){
+					needToTouch.get(direction).add(new Point(Math.abs(direction.xModifier) * (-i) + i + (1 + direction.xModifier) * direction.xModifier * (Chunk.chunkLength - 1) / 2, Math.abs(direction.yModifier) * (-i) + i + (1 + direction.yModifier) * direction.yModifier * (Chunk.chunkLength - 1) / 2));
 				}
 			}
 		}
@@ -89,23 +98,22 @@ public class Maze extends HashMap<String, Chunk>{
 			}
 		}
 		if(chunkType >= 3){			//Gens normal chunk
-			boolean touchesAllAdjacent;
 			ArrayList<Point> branchCoords = new ArrayList<Point>();
 			ArrayList<Point> edgeCoords = new ArrayList<Point>();
-			branchCoords.add(new Point(Chunk.chunkLength / 2, Chunk.chunkLength / 2));
+			branchCoords.add(new Point((int) (Math.random() * Chunk.chunkLength), (int) (Math.random() * Chunk.chunkLength)));
+			ArrayList<Direction> directionToTouch = new ArrayList<Direction>(Arrays.asList(Direction.values()));
 			do{
 				Point placeToStart = branchCoords.get((int) (Math.random() * branchCoords.size()));
 				Direction directionToGo = Direction.values()[(int) (Math.random() * Direction.values().length)];
 				int distanceFromStart = 0;
-				while(Math.random() > 0.3){
+				while(Math.random() > 0.2){
 					Point newLocationCoords = new Point((int) (placeToStart.getX() + directionToGo.xModifier * distanceFromStart), (int) (placeToStart.getY() + directionToGo.yModifier * distanceFromStart));
 					if(newLocationCoords.getX() < Chunk.chunkLength && newLocationCoords.getY() < Chunk.chunkLength && newLocationCoords.getX() >= 0 && newLocationCoords.getY() >= 0){
-						terrain[(int) newLocationCoords.getX()][(int) newLocationCoords.getY()] = emptyTile;
-						if(Math.random() < 0.15){
-							branchCoords.add((Point) newLocationCoords.clone());
-							//add break here?
+						terrain[(int) newLocationCoords.getX()][(int) newLocationCoords.getY()] = getEmptyTile();
+						if(Math.random() < 0.05){
+							branchCoords.add(new Point((int) newLocationCoords.getX(), (int) newLocationCoords.getY()));
 						}
-						if(newLocationCoords.getX() == Chunk.chunkLength || newLocationCoords.getX() == 0 || newLocationCoords.getY() == Chunk.chunkLength || newLocationCoords.getY() == 0){
+						if(newLocationCoords.getX() == Chunk.chunkLength - 1 || newLocationCoords.getX() == 0 || newLocationCoords.getY() == Chunk.chunkLength - 1 || newLocationCoords.getY() == 0){
 							edgeCoords.add((Point) newLocationCoords.clone());
 						}
 						distanceFromStart++;
@@ -113,17 +121,61 @@ public class Maze extends HashMap<String, Chunk>{
 						break;
 					}
 				}
-				touchesAllAdjacent = true;
-				//evaluate touchesAllAdjacent with edgeCoords and needToTouch by making sure there is a matching edgeCoord for each direction in needToTouch
-			}while(!touchesAllAdjacent);
+				Iterator<Direction> directionIter = directionToTouch.iterator();
+				while(directionIter.hasNext()){
+					Direction directionToCheck = directionIter.next();
+					for(Point point : edgeCoords){
+						if(needToTouch.get(directionToCheck).contains(point)){
+							directionIter.remove();
+							break;
+						}
+					}
+				}
+			}while(directionToTouch.size() > 0);
 		}else if(chunkType == 2){	//Gens boss chunk
-			
+			for(int i = 0; i < Chunk.chunkLength; i++){
+				for(int j = 0; j < Chunk.chunkLength; j++){
+					terrain[i][j] = enemyTile;
+				}
+			}
+			terrain[Chunk.chunkLength / 2][Chunk.chunkLength / 2] = bossTile;
 		}else if(chunkType == 1){	//Gens item chunk
-			
+			for(int i = 1; i < Chunk.chunkLength - 1; i++){
+				for(int j = 1; j < Chunk.chunkLength - 1; j++){
+					terrain[i][j] = itemTile;
+				}
+			}
 		}else if(chunkType == 0){	//Gens village
-			
+			this.put(x + ", " + y, new Village(x, y, emptyTile, wallTile));
+			return;
 		}
 		this.put(x + ", " + y, new Chunk(terrain, x, y, emptyTile, wallTile));
+	}
+	
+	/**
+	 * Makes an empty tile that is usually an emptytile, but could also be an item tile or an enemy tile
+	 * @return the empty tile that is almost anything except a boss or wall tile
+	 */
+	public String getEmptyTile(){
+		double randSelection = Math.random();
+		if(randSelection > 0.15){
+			return emptyTile;
+		}else if(randSelection > 0.1){
+			return enemyTile;
+		}else if(randSelection > 0.025){
+			return itemTile;
+		}else{
+			return portalTile;
+		}
+	}
+	
+	/**
+	 * Returns if the tile is a traversable tile (so not a wall or villager tile)
+	 * @param tile the tile to check for traversability
+	 * @return whether or whether not the tile is traversable
+	 */
+	public static boolean isTraversable(String tile){
+		return (emptyTile + itemTile + enemyTile + portalTile + bossTile + playerTile).contains(tile);
 	}
 	 
 	/**

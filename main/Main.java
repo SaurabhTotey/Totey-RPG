@@ -10,6 +10,7 @@ import java.util.Calendar;
 import character.Player;
 import character.Race;
 import display.MainDisplay.optionsPaneMenu;
+import world.Maze;
 
 /**
  * @author Saurabh Totey
@@ -32,6 +33,7 @@ public class Main {
 	public String uninterpretedText = null;
 	public Player mainPlayer = null;
 	public boolean testingMode = true;
+	public Maze world;
 	
 	/**
 	 * The main object
@@ -43,6 +45,14 @@ public class Main {
 	public Main() throws InterruptedException, InvocationTargetException {
 		//This part initializes the GUI and passes itself over to it so it can send this object data
 		this.gui = new display.MainDisplay(this);
+		
+		//Makes a new thread to start making the maze
+		new Thread(new Runnable(){
+			public void run(){
+				world = new Maze();
+			}
+		}).start();
+				
 		
 		//This is where the game actually starts
 		log("You wake up in a vast dank cave. Your head hurts, your vision is blurry, and you don't remember much. You try to remember your name. You think it might be...");
@@ -72,6 +82,9 @@ public class Main {
 	 */
 	public static void main(String[] args) throws InterruptedException, InvocationTargetException{
 		main = new Main();
+		while(main.world == null){
+			Thread.sleep(15);
+		}
 		//TODO
 	}
 	

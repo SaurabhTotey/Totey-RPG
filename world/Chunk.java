@@ -14,7 +14,7 @@ public class Chunk {
 	 * These are common properties of all of the chunks
 	 * These sets of variables store the location as well as the terrain
 	 */
-	public static int chunkLength = 50;
+	public static int chunkLength = 25;
 	public int x;
 	public int y;
 	public String[][] terrain;
@@ -32,6 +32,22 @@ public class Chunk {
 		this.y = y;
 		this.emptyTile = emptyTile;
 		this.wallTile = wallTile;
+	}
+	
+	/**
+	 * Makes a string representation of a chunk
+	 * @return what the chunk's terrain looks like
+	 */
+	@Override
+	public String toString(){
+		String toReturn = "";
+		for(int i = 0; i < terrain.length; i++){
+			for(int j = 0; j < terrain[i].length; j++){
+				toReturn += terrain[i][j];
+			}
+			toReturn += "\n";
+		}
+		return toReturn;
 	}
 
 }
