@@ -17,7 +17,6 @@ import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -43,7 +42,7 @@ public class MainDisplay {
 	 */
 	public JFrame frame;
 	public JPanel mainPane;
-	public JPanel optionsPane;
+	public OptionPane optionsPane;
 	public JPanel userPane;
 	public JPanel logPane;
 	public JTextArea logArea;
@@ -200,10 +199,8 @@ public class MainDisplay {
 				redirectSystemStreams();
 
 				// This code makes the optionspane where all options will be displayed
-				optionsPane = new JPanel(new MigLayout("fill"));
-				optionsPane.setBackground(Color.LIGHT_GRAY);
+				optionsPane = new OptionPane(Color.LIGHT_GRAY, defaultFont, titleFont, mainGame);
 				frame.add(new JScrollPane(optionsPane), "dock west, width 25%!");
-				setOptionsPane(optionsPaneMenu.DEFAULT);
 				
 				//Sets all the userdisplay options to the default font
 				user_name.setFont(defaultFont);
@@ -323,77 +320,6 @@ public class MainDisplay {
 	public void refreshGUI() {
 		this.frame.repaint();
 		this.frame.revalidate();
-	}
-
-	/**
-	 * This is a set of menus of what the optionspane can be set to, the options
-	 * pane is always one of these
-	 */
-	public enum optionsPaneMenu {
-		DEFAULT("Options"), RACES("Choose race"), STATS_GAMBLE_BIG("Choose Stat"), STATS_GAMBLE_SMALL("Choose Stat");
-
-		public String title;
-
-		/**
-		 * This is the constructor for the possible optionspanes possibilities
-		 * @param title what the optionspane title should be with this specific menu
-		 */
-		private optionsPaneMenu(String title) {
-			this.title = title;
-		}
-	}
-
-	/**
-	 * Sets the option pane to show a certain set of options
-	 * @param type the set of options to display
-	 * @throws InterruptedException 
-	 * @throws InvocationTargetException 
-	 */
-	public void setOptionsPane(optionsPaneMenu type) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				optionsPane.removeAll();
-				JLabel optionsTitle = new JLabel(type.title);
-				optionsTitle.setFont(titleFont);
-				optionsTitle.setHorizontalAlignment(SwingConstants.CENTER);
-				optionsPane.add(optionsTitle, "dock north");
-				switch(type){
-					case DEFAULT:
-						//TODO add default menu
-						JButton invButton = new JButton("Open Inventory");
-						invButton.setFont(defaultFont);
-						invButton.addActionListener(new ActionListener(){
-							@Override
-							public void actionPerformed(ActionEvent e){
-								//TODO add inv screen
-							}
-						});
-						optionsPane.add(invButton, "width 90%!, align center, wrap");
-						break;
-					case RACES:
-						JButton[] options = {new JButton("Human"), new JButton("Robot"), new JButton("Shadow"), new JButton("Turtle"), new JButton("Bird")};
-						for(JButton button : options){
-							button.addActionListener(new ActionListener(){
-								@Override
-								public void actionPerformed(ActionEvent e){
-									mainGame.interpretText(((JButton) e.getSource()).getText());
-								}
-							});
-							button.setFont(defaultFont);
-							optionsPane.add(button, "width 90%!, align center, wrap");
-						}
-						break;
-					case STATS_GAMBLE_BIG:
-						//TODO big stats gambling on optionspane
-						break;
-					case STATS_GAMBLE_SMALL:
-						//TODO small stats gambling on optionspane
-						break;
-				}
-				refreshGUI();
-			}
-		});
 	}
 	
 	/**

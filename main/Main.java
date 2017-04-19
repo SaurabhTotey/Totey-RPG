@@ -9,7 +9,7 @@ import java.util.Calendar;
 
 import character.Player;
 import character.Race;
-import display.MainDisplay.optionsPaneMenu;
+import display.OptionPane.OptionsPaneOptions;
 import world.Maze;
 
 /**
@@ -60,7 +60,7 @@ public class Main {
 		name = this.waitForInput(false);
 		this.gui.user_name.setText(name);
 		log("Yes, you remember that your name is \"" + name + "\". Now that you figured that out, you look down at yourself, and are surprised to see that you are a...");
-		this.gui.setOptionsPane(optionsPaneMenu.RACES);
+		this.gui.optionsPane.setOptionsPane(OptionsPaneOptions.RACES);
 		String race = this.waitForInput(false);
 		boolean isValidRace = race.equals("Human") || race.equals("Robot") || race.equals("Shadow") || race.equals("Turtle") || race.equals("Bird");
 		while(!isValidRace){
@@ -69,7 +69,7 @@ public class Main {
 			isValidRace = race.equals("Human") || race.equals("Robot") || race.equals("Shadow") || race.equals("Turtle") || race.equals("Bird");
 		}
 		log("Of course! You remembered that you resembled your " + race.substring(0, 1).toLowerCase() + race.substring(1) + " parent mostly. You, however, could not remember the race of your other parent.");
-		this.gui.setOptionsPane(optionsPaneMenu.DEFAULT);
+		this.gui.optionsPane.setOptionsPane(OptionsPaneOptions.DEFAULT);
 		mainPlayer = new Player(name, Race.stringToRace.get(race));
 		this.gui.updatePlayerInfoPane();
 	}
@@ -85,7 +85,6 @@ public class Main {
 		while(main.world == null){
 			Thread.sleep(15);
 		}
-		//TODO
 	}
 	
 	/**

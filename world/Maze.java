@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  * @author Saurabh Totey
@@ -69,6 +70,16 @@ public class Maze extends HashMap<String, Chunk>{
 	}
 	
 	/**
+	 * Gets a chunk at a specified x and y coordinate
+	 * @param xCoordinate the x coordinate of the chunk to get
+	 * @param yCoordinate the y coordinate of the chunk to get
+	 * @return the chunk at the specified x and y coordinates
+	 */
+	public Chunk get(int xCoordinate, int yCoordinate){
+		return this.get(xCoordinate + ", " + yCoordinate);
+	}
+	
+	/**
 	 * Generates a chunk object and adds it the maze
 	 * Each chunk is stored in a hashmap with the String key being "[x], [y]" and the chunk being the output
 	 * This way chunks can easily be accessed without having to manually iterate through lists
@@ -101,7 +112,7 @@ public class Maze extends HashMap<String, Chunk>{
 			ArrayList<Point> branchCoords = new ArrayList<Point>();
 			ArrayList<Point> edgeCoords = new ArrayList<Point>();
 			branchCoords.add(new Point((int) (Math.random() * Chunk.chunkLength), (int) (Math.random() * Chunk.chunkLength)));
-			ArrayList<Direction> directionToTouch = new ArrayList<Direction>(Arrays.asList(Direction.values()));
+			LinkedList<Direction> directionToTouch = new LinkedList<Direction>(Arrays.asList(Direction.values()));
 			do{
 				Point placeToStart = branchCoords.get((int) (Math.random() * branchCoords.size()));
 				Direction directionToGo = Direction.values()[(int) (Math.random() * Direction.values().length)];
