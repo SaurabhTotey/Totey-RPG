@@ -7,9 +7,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import javax.swing.JTextField;
+
 import character.Player;
 import character.Race;
 import display.OptionPane.OptionsPaneOptions;
+import display.PlayerPane.PlayerStat;
 import world.Maze;
 
 /**
@@ -58,7 +61,7 @@ public class Main {
 		log("You wake up in a vast dank cave. Your head hurts, your vision is blurry, and you don't remember much. You try to remember your name. You think it might be...");
 		String name;
 		name = this.waitForInput(false);
-		this.gui.user_name.setText(name);
+		((JTextField) this.gui.userPane.playerInfoPanes.get(PlayerStat.PLAYER_NAME)[1]).setText(name);
 		log("Yes, you remember that your name is \"" + name + "\". Now that you figured that out, you look down at yourself, and are surprised to see that you are a...");
 		this.gui.optionsPane.setOptionsPane(OptionsPaneOptions.RACES);
 		String race = this.waitForInput(false);
@@ -71,7 +74,7 @@ public class Main {
 		log("Of course! You remembered that you resembled your " + race.substring(0, 1).toLowerCase() + race.substring(1) + " parent mostly. You, however, could not remember the race of your other parent.");
 		this.gui.optionsPane.setOptionsPane(OptionsPaneOptions.DEFAULT);
 		mainPlayer = new Player(name, Race.stringToRace.get(race));
-		this.gui.updatePlayerInfoPane();
+		this.gui.refreshGUI();
 	}
 
 	/**
@@ -122,7 +125,7 @@ public class Main {
 		if(this.willInterpretIncoming){
 			if(Command.doCommand(incoming)){
 				log("The command was successful!");
-				this.gui.updatePlayerInfoPane();
+				this.gui.refreshGUI();
 			}else{
 				log("Sorry, the command \"" + incoming +  "\" wasn't understood. Maybe try the 'help' command...");
 			}

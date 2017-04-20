@@ -18,16 +18,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-import character.Player;
 import main.Main;
 import net.miginfocom.swing.MigLayout;
 
@@ -43,7 +40,7 @@ public class MainDisplay {
 	public JFrame frame;
 	public JPanel mainPane;
 	public OptionPane optionsPane;
-	public JPanel userPane;
+	public PlayerPane userPane;
 	public JPanel logPane;
 	public JTextArea logArea;
 	public JTextField inputField;
@@ -57,70 +54,6 @@ public class MainDisplay {
 	 */
 	public int userLocation;
 	public ArrayList<String> lastEntered = new ArrayList<String>();
-	
-	/**
-	 * These are all of the core parts of the User Information pane
-	 * These all correspond to some aspect of the player and get updated in the updatePlayerInfoPane() method below
-	 * They are initialized as only showing question marks because they are initially unknown, but can get updated with the aforementioned method
-	 * After they are initialized, they are all set to uneditable and centered
-	 */
-	public JTextField user_name = new JTextField("???");
-	public JTextField user_race = new JTextField("???");
-	public JTextField user_health = new JTextField("???");
-	public JTextField user_attack = new JTextField("???");
-	public JTextField user_defense = new JTextField("???");
-	public JTextField user_speed = new JTextField("???");
-	public JTextField user_earthAffinity = new JTextField("???");
-	public JTextField user_fireAffinity = new JTextField("???");
-	public JTextField user_waterAffinity = new JTextField("???");
-	public JTextField user_lightAffinity = new JTextField("???");
-	public JTextField user_darknessAffinity = new JTextField("???");
-	public JTextField user_orderAffinity = new JTextField("???");
-	public JTextField user_chaosAffinity = new JTextField("???");
-	public JTextField user_pet = new JTextField("???");
-	public JTextField user_armor = new JTextField("???");
-	public JTextField user_potions = new JTextField("???");
-	public JTextField user_bombs = new JTextField("???");
-	{
-		user_name.setEditable(false);
-		user_race.setEditable(false);
-		user_health.setEditable(false);
-		user_attack.setEditable(false);
-		user_defense.setEditable(false);
-		user_defense.setEditable(false);
-		user_speed.setEditable(false);
-		user_earthAffinity.setEditable(false);
-		user_fireAffinity.setEditable(false);
-		user_waterAffinity.setEditable(false);
-		user_lightAffinity.setEditable(false);
-		user_darknessAffinity.setEditable(false);
-		user_orderAffinity.setEditable(false);
-		user_chaosAffinity.setEditable(false);
-		user_pet.setEditable(false);
-		user_armor.setEditable(false);
-		user_potions.setEditable(false);
-		user_bombs.setEditable(false);
-		
-		user_name.setHorizontalAlignment(SwingConstants.CENTER);
-		user_race.setHorizontalAlignment(SwingConstants.CENTER);
-		user_health.setHorizontalAlignment(SwingConstants.CENTER);
-		user_attack.setHorizontalAlignment(SwingConstants.CENTER);
-		user_defense.setHorizontalAlignment(SwingConstants.CENTER);
-		user_defense.setHorizontalAlignment(SwingConstants.CENTER);
-		user_speed.setHorizontalAlignment(SwingConstants.CENTER);
-		user_earthAffinity.setHorizontalAlignment(SwingConstants.CENTER);
-		user_fireAffinity.setHorizontalAlignment(SwingConstants.CENTER);
-		user_waterAffinity.setHorizontalAlignment(SwingConstants.CENTER);
-		user_lightAffinity.setHorizontalAlignment(SwingConstants.CENTER);
-		user_darknessAffinity.setHorizontalAlignment(SwingConstants.CENTER);
-		user_orderAffinity.setHorizontalAlignment(SwingConstants.CENTER);
-		user_chaosAffinity.setHorizontalAlignment(SwingConstants.CENTER);
-		user_pet.setHorizontalAlignment(SwingConstants.CENTER);
-		user_armor.setHorizontalAlignment(SwingConstants.CENTER);
-		user_potions.setHorizontalAlignment(SwingConstants.CENTER);
-		user_bombs.setHorizontalAlignment(SwingConstants.CENTER);
-		
-	}
 
 	/**
 	 * This is the constructor for the gui object It makes a jframe with all of
@@ -202,66 +135,9 @@ public class MainDisplay {
 				optionsPane = new OptionPane(Color.LIGHT_GRAY, defaultFont, titleFont, mainGame);
 				frame.add(new JScrollPane(optionsPane), "dock west, width 25%!");
 				
-				//Sets all the userdisplay options to the default font
-				user_name.setFont(defaultFont);
-				user_race.setFont(defaultFont);
-				user_health.setFont(defaultFont);
-				user_attack.setFont(defaultFont);
-				user_defense.setFont(defaultFont);
-				user_defense.setFont(defaultFont);
-				user_speed.setFont(defaultFont);
-				user_earthAffinity.setFont(defaultFont);
-				user_fireAffinity.setFont(defaultFont);
-				user_waterAffinity.setFont(defaultFont);
-				user_lightAffinity.setFont(defaultFont);
-				user_darknessAffinity.setFont(defaultFont);
-				user_orderAffinity.setFont(defaultFont);
-				user_chaosAffinity.setFont(defaultFont);
-				user_pet.setFont(defaultFont);
-				user_armor.setFont(defaultFont);
-				user_potions.setFont(defaultFont);
-				user_bombs.setFont(defaultFont);
-				
-				// TODO this part makes a user pane where the user's information will be displayed
-				userPane = new JPanel(new MigLayout("fill"));
-				userPane.setBackground(Color.LIGHT_GRAY);
-				JLabel userTitle = new JLabel("Player Info");
-				userTitle.setFont(titleFont);
-				userTitle.setHorizontalAlignment(SwingConstants.CENTER);
-				userPane.add(userTitle, "dock north");
-				
-				JLabel nameLabel = new JLabel("Name: ");
-				nameLabel.setFont(defaultFont);
-				userPane.add(nameLabel, "gapleft 5%");
-				userPane.add(user_name, "growx, pushx, span, wrap, gapright 5%");
-				
-				JLabel raceLabel = new JLabel("Race: ");
-				raceLabel.setFont(defaultFont);
-				userPane.add(raceLabel, "gapleft 5%");
-				userPane.add(user_race, "growx, pushx, span, wrap, gapright 5%");
-				
-				JLabel healthLabel = new JLabel("Health: ");
-				healthLabel.setFont(defaultFont);
-				userPane.add(healthLabel, "gapleft 5%");
-				userPane.add(user_health, "growx");
-				
-				JLabel attackLabel = new JLabel("Attack: ");
-				attackLabel.setFont(defaultFont);
-				userPane.add(attackLabel, "");
-				userPane.add(user_attack, "growx, pushx, wrap, gapright 5%");
-				
-				JLabel defenseLabel = new JLabel("Defense: ");
-				defenseLabel.setFont(defaultFont);
-				userPane.add(defenseLabel, "gapleft 5%");
-				userPane.add(user_defense, "growx");
-				
-				JLabel speedLabel = new JLabel("Speed: ");
-				speedLabel.setFont(defaultFont);
-				userPane.add(speedLabel, "");
-				userPane.add(user_speed, "growx, pushx, wrap, gapright 5%");
-				
+				//TODO this part makes a user pane where the user's information will be displayed				
 				//TODO add the rest of these
-				
+				userPane = new PlayerPane(Color.LIGHT_GRAY, defaultFont, titleFont, mainGame);
 				frame.add(new JScrollPane(userPane), "dock east, width 25%!");
 
 				// This part adds the main pane of the game
@@ -325,7 +201,7 @@ public class MainDisplay {
 	/**
 	 * Refreshes the player information pane with the newest information
 	 */
-	public void updatePlayerInfoPane(){
+	/*public void updatePlayerInfoPane(){
 		Player player = mainGame.mainPlayer;
 		//TODO get main object's player info and update all the user_ fields
 		if(player != null && player.areStatsVisible){
@@ -339,6 +215,6 @@ public class MainDisplay {
 			this.user_speed.setText(player.getSpeed());
 		}
 		refreshGUI();
-	}
+	}*/
 
 }

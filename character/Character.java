@@ -132,34 +132,34 @@ public class Character {
 	
 	/**
 	 * Getter method for character health
-	 * @return a string of the user's current health / max health
+	 * @return the user's current health / max health
 	 */
-	public String getHealth(){
-		return this.health[0] + " / " + this.health[1];
+	public int[] getHealth(){
+		return this.health;
 	}
 	
 	/**
 	 * Getter method for character attack
-	 * @return a string of the user's current attack / max attack
+	 * @return the user's current attack / max attack
 	 */
-	public String getAttack(){
-		return this.attack[0] + " / " + this.attack[1];
+	public int[] getAttack(){
+		return this.attack;
 	}
 	
 	/**
 	 * Getter method for character defense
-	 * @return a string of the user's current defense / max defense
+	 * @return the user's current defense / max defense
 	 */
-	public String getDefense(){
-		return this.defense[0] + " / " + this.defense[1];
+	public int[] getDefense(){
+		return this.defense;
 	}
 	
 	/**
 	 * Getter method for character speed
-	 * @return a string of the user's current speed / max speed
+	 * @return the user's current speed / max speed
 	 */
-	public String getSpeed(){
-		return this.speed[0] + " / " + this.speed[1];
+	public int[] getSpeed(){
+		return this.speed;
 	}
 
 }
