@@ -45,6 +45,7 @@ public class Maze extends HashMap<String, Chunk>{
 	/**
 	 * Properties of the maze such as how things would be represented
 	 */
+	public int[] playerLocation = new int[4];
 	public static int displayWidth = 40;
 	public static int displayHeight = 20;
 	public static String emptyTile = "□"; //TODO pass different on/off tiles to chunks based on distance from center
@@ -194,8 +195,8 @@ public class Maze extends HashMap<String, Chunk>{
 	 * Is based off of the static displayWidth and displayHeight properties
 	 * @return the string to display
 	 */
-	public String getToDisplay(){
-		return "";
+	public String toString(){
+		return this.get("0, 0").toString();
 	}
 	
 	/**

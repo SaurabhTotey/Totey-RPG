@@ -11,6 +11,7 @@ import javax.swing.JTextField;
 
 import character.Player;
 import character.Race;
+import display.MainPane.MainPaneMode;
 import display.OptionPane.OptionsPaneOptions;
 import display.PlayerPane.PlayerStat;
 import world.Maze;
@@ -75,6 +76,12 @@ public class Main {
 		log("Of course! You remembered that you resembled your " + race.substring(0, 1).toLowerCase() + race.substring(1) + " parent mostly. You, however, could not remember the race of your other parent.");
 		this.gui.optionsPane.setOptionsPane(OptionsPaneOptions.DEFAULT);
 		mainPlayer = new Player(name, Race.stringToRace.get(race));
+		
+		//Changes the mainpane to the maze
+		while(this.world == null){
+			Thread.sleep(200);
+		}
+		this.gui.mainPane.setMode(MainPaneMode.MAZE);
 		
 		//Sets it so that the GUI will always update
 		new Thread(new Runnable(){

@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Font;
 
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 import main.Main;
 
@@ -18,12 +19,21 @@ import main.Main;
 public class MainPane extends JPanel {
 	
 	/**
+	 * The mode of the main pane
+	 * What it is displaying
+	 */
+	public enum MainPaneMode{
+		MAZE, INVENTORY;
+	}
+	
+	/**
 	 * Instancedata for the MainPane
 	 * Used for formmatting and refreshing data and accessing data
 	 */
 	public Font defaultFont;
 	public Font titleFont;
 	public Main mainGame;
+	public MainPaneMode mode;
 
 	/**
 	 * A constructor for the main pane class
@@ -37,6 +47,27 @@ public class MainPane extends JPanel {
 		this.defaultFont = defaultFont;
 		this.titleFont = titleFont;
 		this.mainGame = mainGame;
+	}
+	
+	/**
+	 * Sets the mode of the mainpane
+	 * Makes necessary changes based on the mode
+	 * @param newMode the new mode of the main pane
+	 */
+	public void setMode(MainPaneMode newMode){
+		this.removeAll();
+		this.mode = newMode;
+		switch(newMode){
+			case MAZE:
+				JTextArea mazeToDisp = new JTextArea(this.mainGame.world.toString());
+				mazeToDisp.setFont(defaultFont);
+				mazeToDisp.setEditable(false);
+				this.add(mazeToDisp, "push, grow, fit");
+				break;
+			case INVENTORY:
+				//TODO
+				break;
+		}
 	}
 
 }

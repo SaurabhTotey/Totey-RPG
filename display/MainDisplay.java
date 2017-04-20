@@ -38,7 +38,7 @@ public class MainDisplay {
 	 * These are all of the core parts of the Main GUI
 	 */
 	public JFrame frame;
-	public JPanel mainPane;
+	public MainPane mainPane;
 	public OptionPane optionsPane;
 	public PlayerPane userPane;
 	public JPanel logPane;
@@ -85,8 +85,8 @@ public class MainDisplay {
 				frame.setLayout(new MigLayout());
 
 				// This part makes the new fonts based on screen size
-				titleFont = new Font("titleFont", Font.ROMAN_BASELINE, screenX / 70);
-				defaultFont = new Font("defaultFont", Font.PLAIN, screenX / 120);
+				titleFont = new Font(Font.SERIF, Font.ROMAN_BASELINE, screenX / 70);
+				defaultFont = new Font(Font.MONOSPACED, Font.PLAIN, screenX / 130);
 
 				// This code makes two textareas, one for a log, and another for text
 				// input and configures them so that one displays info, and the other
@@ -142,7 +142,7 @@ public class MainDisplay {
 
 				// This part adds the main pane of the game
 				// All of the main stuff should show up on this pane
-				mainPane = new JPanel();
+				mainPane = new MainPane(Color.WHITE, defaultFont, titleFont, mainGame);
 				frame.add(mainPane, "grow, push, width 50%!, height 75%!");
 
 				// This part shows the frame and sets the focus to the inputfield
