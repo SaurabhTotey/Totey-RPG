@@ -19,7 +19,7 @@ import net.miginfocom.swing.MigLayout;
 
 /**
  * @author Saurabh Totey
- *
+ * The player pane is the pane that displays the player's information
  */
 public class PlayerPane extends JPanel {
 	

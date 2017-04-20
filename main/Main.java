@@ -58,6 +58,7 @@ public class Main {
 				
 		
 		//This is where the game actually starts
+		//Collects user name and first race
 		log("You wake up in a vast dank cave. Your head hurts, your vision is blurry, and you don't remember much. You try to remember your name. You think it might be...");
 		String name;
 		name = this.waitForInput(false);
@@ -74,7 +75,14 @@ public class Main {
 		log("Of course! You remembered that you resembled your " + race.substring(0, 1).toLowerCase() + race.substring(1) + " parent mostly. You, however, could not remember the race of your other parent.");
 		this.gui.optionsPane.setOptionsPane(OptionsPaneOptions.DEFAULT);
 		mainPlayer = new Player(name, Race.stringToRace.get(race));
-		this.gui.refreshGUI();
+		
+		//Sets it so that the GUI will always update
+		new Thread(new Runnable(){
+			@Override
+			public void run(){
+				gui.refreshGUI();
+			}
+		}).run();
 	}
 
 	/**
@@ -85,9 +93,6 @@ public class Main {
 	 */
 	public static void main(String[] args) throws InterruptedException, InvocationTargetException{
 		main = new Main();
-		while(main.world == null){
-			Thread.sleep(15);
-		}
 	}
 	
 	/**

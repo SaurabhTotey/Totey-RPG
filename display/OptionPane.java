@@ -20,10 +20,15 @@ import net.miginfocom.swing.MigLayout;
 
 /**
  * @author Saurabh Totey
- *
+ * The option pane is the pane where a user can click a button to get a desired action rather
+ * than typing out the command: the command will just be automatically typed in the chat for consistency's sake
  */
 public class OptionPane extends JPanel {
 	
+	/**
+	 * Instancedata for the OptionPane
+	 * Used for formmatting and refreshing data and accessing data
+	 */
 	public Font defaultFont;
 	public Font titleFont;
 	public Main mainGame;
