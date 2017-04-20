@@ -194,8 +194,9 @@ public class MainDisplay {
 	 * This method just refreshes and updates the GUI
 	 */
 	public void refreshGUI() {
-		this.frame.repaint();
-		this.frame.revalidate();
+		userPane.updatePane();
+		frame.repaint();
+		frame.revalidate();
 	}
 	
 	/**

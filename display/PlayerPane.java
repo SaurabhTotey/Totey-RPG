@@ -118,7 +118,16 @@ public class PlayerPane extends JPanel {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				//TODO
+				try{
+					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_NAME))[1]).setText(mainGame.mainPlayer.name);
+					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_RACES))[1]).setText(mainGame.mainPlayer.races[0].stringName + " / " + ((mainGame.mainPlayer.races[1] != null)? mainGame.mainPlayer.races[1].stringName : "???"));
+					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_HEALTH))[1]).setText(mainGame.mainPlayer.getHealth()[0] + " / " + mainGame.mainPlayer.getHealth()[1]);
+					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_ATTACK))[1]).setText(mainGame.mainPlayer.getAttack()[0] + " / " + mainGame.mainPlayer.getAttack()[1]);
+					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_DEFENSE))[1]).setText(mainGame.mainPlayer.getDefense()[0] + " / " + mainGame.mainPlayer.getDefense()[1]);
+					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_SPEED))[1]).setText(mainGame.mainPlayer.getSpeed()[0] + " / " + mainGame.mainPlayer.getSpeed()[1]);
+				}catch(Exception e){
+					
+				}
 			}
 		});
 	}
