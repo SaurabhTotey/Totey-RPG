@@ -148,6 +148,20 @@ public class MainDisplay {
 				// This part shows the frame and sets the focus to the inputfield
 				frame.setVisible(true);
 				inputField.requestFocus();
+				
+				//Makes a new thread to continuously update the GUI
+				new Thread(new Runnable(){
+					@Override
+					public void run(){
+						while(true){
+							refreshGUI();
+							try {
+								Thread.sleep(300);
+							} catch (InterruptedException e) {
+							}
+						}
+					}
+				}).start();
 			}
 		});
 	}
@@ -183,6 +197,7 @@ public class MainDisplay {
 	 */
 	public void updateTextArea(final String text) {
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				logArea.append(text);
 			}
@@ -193,9 +208,14 @@ public class MainDisplay {
 	 * This method just refreshes and updates the GUI
 	 */
 	public void refreshGUI() {
-		userPane.updatePane();
-		frame.repaint();
-		frame.revalidate();
+		SwingUtilities.invokeLater(new Runnable(){
+			@Override
+			public void run(){
+				userPane.updatePane();
+				frame.repaint();
+				frame.revalidate();
+			}
+		});
 	}
 
 }

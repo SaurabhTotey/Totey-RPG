@@ -116,7 +116,6 @@ public class OptionPane extends JPanel {
 						//TODO small stats gambling on optionspane
 						break;
 				}
-				mainGame.gui.refreshGUI();
 			}
 		});
 	}

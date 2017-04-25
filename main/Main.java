@@ -6,7 +6,6 @@ package main;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
 import javax.swing.JTextField;
 
 import character.Player;
@@ -51,12 +50,7 @@ public class Main {
 		this.gui = new display.MainDisplay(this);
 		
 		//Makes a new thread to start making the maze
-		new Thread(new Runnable(){
-			public void run(){
-				world = new Maze();
-			}
-		}).start();
-				
+		new Thread(() -> world = new Maze()).start();
 		
 		//This is where the game actually starts
 		//Collects user name and first race
@@ -76,20 +70,6 @@ public class Main {
 		log("Of course! You remembered that you resembled your " + race.substring(0, 1).toLowerCase() + race.substring(1) + " parent mostly. You, however, could not remember the race of your other parent.");
 		this.gui.optionsPane.setOptionsPane(OptionsPaneOptions.DEFAULT);
 		mainPlayer = new Player(name, Race.stringToRace.get(race));
-		
-		//Changes the mainpane to the maze
-		while(this.world == null){
-			Thread.sleep(200);
-		}
-		this.gui.mainPane.setMode(MainPaneMode.MAZE);
-		
-		//Sets it so that the GUI will always update
-		new Thread(new Runnable(){
-			@Override
-			public void run(){
-				gui.refreshGUI();
-			}
-		}).run();
 	}
 
 	/**
@@ -99,7 +79,18 @@ public class Main {
 	 * @throws InvocationTargetException 
 	 */
 	public static void main(String[] args) throws InterruptedException, InvocationTargetException{
+		//TODO implement saves and then set main to a selected save
+		//Do saves with serialization
+		//And have a preliminary splash screen to allow them to make a new game/select a save
 		main = new Main();
+		
+		//Changes the mainpane to the maze
+		while(main.world == null){
+			Thread.sleep(200);
+			//TODO remove below, but make it unecessary first
+			System.out.println("Maze not complete");
+		}
+		main.gui.mainPane.setMode(MainPaneMode.MAZE);
 	}
 	
 	/**
@@ -137,7 +128,6 @@ public class Main {
 		if(this.willInterpretIncoming){
 			if(Command.doCommand(incoming)){
 				log("The command was successful!");
-				this.gui.refreshGUI();
 			}else{
 				log("Sorry, the command \"" + incoming +  "\" wasn't understood. Maybe try the 'help' command...");
 			}

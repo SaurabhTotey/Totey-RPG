@@ -44,12 +44,14 @@ public class Maze extends HashMap<String, Chunk>{
 	
 	/**
 	 * Properties of the maze such as how things would be represented
+	 * Player location is stored in an array of length 4 where the location is represented as
+	 * {chunkX, chunkY, playerX, playerY}
 	 */
 	public int[] playerLocation = new int[4];
 	public static int displayWidth = 40;
 	public static int displayHeight = 20;
-	public static String emptyTile = "□"; //TODO pass different on/off tiles to chunks based on distance from center
-	public static String wallTile = "■";
+	public static String emptyTile = " "; //TODO pass different on/off tiles to chunks based on distance from center
+	public static String wallTile = "|"; //The unicode black/white boxes don't work because monospace doesn't work for them :(
 	public static String playerTile = "P";
 	public static String enemyTile = "E";
 	public static String bossTile = "B";
@@ -68,15 +70,27 @@ public class Maze extends HashMap<String, Chunk>{
 				this.generateChunk(i, j);
 			}
 		}
+		while(this.get(0, 0).terrain[Chunk.chunkLength / 2][Chunk.chunkLength / 2].equals(wallTile)){
+			this.generateChunk(0, 0);
+		}
+		this.get(0, 0).terrain[Chunk.chunkLength / 2][Chunk.chunkLength / 2] = playerTile;
+		playerLocation[0] = 0;
+		playerLocation[1] = 0;
+		playerLocation[2] = Chunk.chunkLength / 2;
+		playerLocation[3] = Chunk.chunkLength / 2;
 	}
 	
 	/**
 	 * Gets a chunk at a specified x and y coordinate
+	 * If the chunk doesn't exist, it generates the chunk and then returns it
 	 * @param xCoordinate the x coordinate of the chunk to get
 	 * @param yCoordinate the y coordinate of the chunk to get
 	 * @return the chunk at the specified x and y coordinates
 	 */
 	public Chunk get(int xCoordinate, int yCoordinate){
+		if(this.get(xCoordinate + ", " + yCoordinate) == null){
+			this.generateChunk(xCoordinate, yCoordinate);
+		}
 		return this.get(xCoordinate + ", " + yCoordinate);
 	}
 	
@@ -86,7 +100,7 @@ public class Maze extends HashMap<String, Chunk>{
 	 * This way chunks can easily be accessed without having to manually iterate through lists
 	 * TODO make this
 	 */
-	public void generateChunk(int x, int y){
+	public synchronized void generateChunk(int x, int y){
 		//Gets the parts of the adjacent chunks the new chunk should touch
 		HashMap<Direction, Chunk> touching = new HashMap<Direction, Chunk>();
 		touching.put(Direction.UP, this.get(x + ", " + (y + 1)));
@@ -122,7 +136,7 @@ public class Maze extends HashMap<String, Chunk>{
 					Point newLocationCoords = new Point((int) (placeToStart.getX() + directionToGo.xModifier * distanceFromStart), (int) (placeToStart.getY() + directionToGo.yModifier * distanceFromStart));
 					if(newLocationCoords.getX() < Chunk.chunkLength && newLocationCoords.getY() < Chunk.chunkLength && newLocationCoords.getX() >= 0 && newLocationCoords.getY() >= 0){
 						terrain[(int) newLocationCoords.getX()][(int) newLocationCoords.getY()] = getEmptyTile();
-						if(Math.random() < 0.05){
+						if(Math.random() < 0.025){
 							branchCoords.add(new Point((int) newLocationCoords.getX(), (int) newLocationCoords.getY()));
 						}
 						if(newLocationCoords.getX() == Chunk.chunkLength - 1 || newLocationCoords.getX() == 0 || newLocationCoords.getY() == Chunk.chunkLength - 1 || newLocationCoords.getY() == 0){
@@ -174,7 +188,7 @@ public class Maze extends HashMap<String, Chunk>{
 			return emptyTile;
 		}else if(randSelection > 0.1){
 			return enemyTile;
-		}else if(randSelection > 0.025){
+		}else if(randSelection > 0.0025){
 			return itemTile;
 		}else{
 			return portalTile;
@@ -196,7 +210,15 @@ public class Maze extends HashMap<String, Chunk>{
 	 * @return the string to display
 	 */
 	public String toString(){
-		return this.get("0, 0").toString();
+		String[][] newTerrain = new String[displayWidth][displayHeight];
+		newTerrain[displayWidth / 2][displayHeight / 2] = playerTile;
+		int[] displayFinderLocation = this.playerLocation.clone();
+		displayFinderLocation[2] -= displayWidth / 2;
+		displayFinderLocation[3] -= displayHeight / 2;
+		//TODO find top left corner
+		//TODO iterate through all lines starting from top left and generating needed chunks
+		String toReturn = this.get(3, 3).toString();
+		return toReturn;
 	}
 	
 	/**
