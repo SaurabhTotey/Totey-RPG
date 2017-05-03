@@ -85,7 +85,7 @@ public class OptionPane extends JPanel {
 				add(optionsTitle, "dock north");
 				switch(type){
 					case DEFAULT:
-						//TODO add default menu
+						//TODO finish default menu
 						JButton invButton = new JButton("Open Inventory");
 						invButton.setFont(defaultFont);
 						invButton.addActionListener(new ActionListener(){

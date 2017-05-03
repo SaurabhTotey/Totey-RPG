@@ -88,6 +88,7 @@ public class Main {
 		while(main.world == null){
 			Thread.sleep(200);
 			//TODO remove below, but make it unecessary first
+			//TODO sometimes world is stuck infinitely generating... happens due to maze generation thread suspending due to a nullpointer exception
 			System.out.println("Maze not complete");
 		}
 		main.gui.mainPane.setMode(MainPaneMode.MAZE);
@@ -129,7 +130,7 @@ public class Main {
 			if(Command.doCommand(incoming)){
 				log("The command was successful!");
 			}else{
-				log("Sorry, the command \"" + incoming +  "\" wasn't understood. Maybe try the 'help' command...");
+				log("Sorry, the command \'" + incoming +  "\' wasn't understood. Maybe try the 'help' command...");
 			}
 		}else{
 			this.uninterpretedText = incoming;

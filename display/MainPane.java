@@ -65,7 +65,7 @@ public class MainPane extends JPanel {
 				this.add(mazeToDisp, "push, grow, fit");
 				break;
 			case INVENTORY:
-				//TODO
+				//TODO make this once inventory screen is made
 				break;
 		}
 	}

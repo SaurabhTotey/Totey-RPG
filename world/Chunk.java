@@ -24,7 +24,6 @@ public class Chunk {
 	/**
 	 * A chunk object
 	 * The objects just store their x and y locations as well as their actual terrain
-	 * TODO make this
 	 */
 	public Chunk(String[][] terrain, int x, int y, String emptyTile, String wallTile) {
 		this.terrain = terrain;

@@ -11,7 +11,7 @@ public class Village extends Chunk {
 	
 	/**
 	 * Extra properties that a village has that a chunk doesn't
-	 * Used for TODO
+	 * Used for TODO find uses
 	 */
 	
 	/**
@@ -31,7 +31,7 @@ public class Village extends Chunk {
 	 * @return
 	 */
 	private static String[][] makeVillage(String emptyTile, String wallTile){
-		String[][] villageAppearance = null; //TODO
+		String[][] villageAppearance = null; //TODO make village gen
 		return villageAppearance;
 	}
 

@@ -48,8 +48,8 @@ public class Maze extends HashMap<String, Chunk>{
 	 * {chunkX, chunkY, playerX, playerY}
 	 */
 	public int[] playerLocation = new int[4];
-	public static int displayWidth = 40;
-	public static int displayHeight = 20;
+	public static int displayWidth = 81;
+	public static int displayHeight = 61;
 	public static String emptyTile = " "; //TODO pass different on/off tiles to chunks based on distance from center
 	public static String wallTile = "|"; //The unicode black/white boxes don't work because monospace doesn't work for them :(
 	public static String playerTile = "P";
@@ -61,7 +61,6 @@ public class Maze extends HashMap<String, Chunk>{
 	
 	/**
 	 * Constructs the maze object for the player to explore
-	 * TODO make this
 	 */
 	public Maze(){
 		super();
@@ -98,7 +97,6 @@ public class Maze extends HashMap<String, Chunk>{
 	 * Generates a chunk object and adds it the maze
 	 * Each chunk is stored in a hashmap with the String key being "[x], [y]" and the chunk being the output
 	 * This way chunks can easily be accessed without having to manually iterate through lists
-	 * TODO make this
 	 */
 	public synchronized void generateChunk(int x, int y){
 		//Gets the parts of the adjacent chunks the new chunk should touch
@@ -183,15 +181,15 @@ public class Maze extends HashMap<String, Chunk>{
 	 * @return the empty tile that is almost anything except a boss or wall tile
 	 */
 	public String getEmptyTile(){
-		double randSelection = Math.random();
-		if(randSelection > 0.15){
-			return emptyTile;
-		}else if(randSelection > 0.1){
-			return enemyTile;
-		}else if(randSelection > 0.0025){
-			return itemTile;
+		int randSelection = (int) (Math.random() * 50001);
+		if(randSelection <= 2500){
+			return enemyTile; // 1/20 chance
+		}else if(randSelection <= 2510){
+			return itemTile; // 1/5000 chance
+		}else if(randSelection == 2511){
+			return portalTile; // 1/50000 chance
 		}else{
-			return portalTile;
+			return emptyTile;
 		}
 	}
 	
@@ -210,14 +208,16 @@ public class Maze extends HashMap<String, Chunk>{
 	 * @return the string to display
 	 */
 	public String toString(){
-		String[][] newTerrain = new String[displayWidth][displayHeight];
-		newTerrain[displayWidth / 2][displayHeight / 2] = playerTile;
-		int[] displayFinderLocation = this.playerLocation.clone();
-		displayFinderLocation[2] -= displayWidth / 2;
-		displayFinderLocation[3] -= displayHeight / 2;
-		//TODO find top left corner
-		//TODO iterate through all lines starting from top left and generating needed chunks
-		String toReturn = this.get(3, 3).toString();
+		String toReturn = "";
+		for(int y = 0; y < displayWidth; y++){
+			for(int x = 0; x < displayHeight; x++){
+				int[] locationToGet = chunkCoordinatesToAbsolute(this.playerLocation.clone());
+				locationToGet[0] += x - displayWidth / 2;
+				locationToGet[1] += y - displayHeight / 2;
+				toReturn += getStrAt(locationToGet);
+			}
+			toReturn += "\n";
+		}
 		return toReturn;
 	}
 	
@@ -235,11 +235,56 @@ public class Maze extends HashMap<String, Chunk>{
 	/**
 	 * Sends the player to a certain chunk
 	 * Always puts the player in the center of the chunk
-	 * @param xChunk the x-coordinate of the chunk to send the player
-	 * @param yChunk the y-coordinate of the chunk to send the player
+	 * @param xChunkCoordinate the x-coordinate of the chunk to send the player
+	 * @param yChunkCoordinate the y-coordinate of the chunk to send the player
 	 */
-	public void setCoords(int xChunk, int yChunk){
-		
+	public void setCoordsByChunk(int xChunkCoordinate, int yChunkCoordinate){
+		//TODO make this
+	}
+	
+	/**
+	 * Sends the player to a specific location
+	 * @param xChunkCoordinate the x-coordinate of where to send the player
+	 * @param yChunkCoordinate the y-coordinate of where to send the player
+	 */
+	public void setCoordsByAbsolute(int xChunkCoordinate, int yChunkCoordinate){
+		//TODO make this
+	}
+	
+	/**
+	 * Takes in absolute coordinates and gives coordinates for a chunk and innerchunk coordinates
+	 * @param absoluteCoordinates absolute coordinates for a point
+	 * @return the coordinates for the chunk and the coordinates within the chunk
+	 */
+	public static int[] absoluteToChunkCoordinates(int[] absoluteCoordinates) {
+		int[] toReturn = new int[4];
+		toReturn[0] = Math.floorDiv(absoluteCoordinates[0], Chunk.chunkLength);
+		toReturn[1] = Math.floorDiv(absoluteCoordinates[1], Chunk.chunkLength);
+		toReturn[2] = (((int) Math.round(Math.ceil(Math.abs((0.0 + absoluteCoordinates[0]) / Chunk.chunkLength)))) * Chunk.chunkLength + absoluteCoordinates[0]) % Chunk.chunkLength;
+		toReturn[3] = (((int) Math.round(Math.ceil(Math.abs((0.0 + absoluteCoordinates[1]) / Chunk.chunkLength)))) * Chunk.chunkLength + absoluteCoordinates[1]) % Chunk.chunkLength;
+		return toReturn;
+	}
+	
+	/**
+	 * Takes in chunk coordinates and relative coordinates to give back absolute coordinates
+	 * @param chunkCoordinates the coordinates for the chunk and the coordinates within the chunk
+	 * @return absolute coordinates for that point
+	 */
+	public static int[] chunkCoordinatesToAbsolute(int[] chunkCoordinates){
+		int[] toReturn = new int[2];
+		toReturn[0] = chunkCoordinates[0] * Chunk.chunkLength + chunkCoordinates[2] - ((chunkCoordinates[0] >= 0)? 0 : Chunk.chunkLength);
+		toReturn[1] = chunkCoordinates[1] * Chunk.chunkLength + chunkCoordinates[3] - ((chunkCoordinates[1] >= 0)? 0 : Chunk.chunkLength);
+		return toReturn;
+	}
+	
+	/**
+	 * Gets a part of a chunk with absolute coordinates
+	 * @param absoluteCoordinates
+	 * @return
+	 */
+	public String getStrAt(int[] absoluteCoordinates){
+		int[] coordinates = absoluteToChunkCoordinates(absoluteCoordinates);
+		return this.get(coordinates[0], coordinates[1]).terrain[coordinates[2]][coordinates[3]];
 	}
 
 }

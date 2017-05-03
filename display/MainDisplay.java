@@ -135,8 +135,7 @@ public class MainDisplay {
 				optionsPane = new OptionPane(Color.LIGHT_GRAY, defaultFont, titleFont, mainGame);
 				frame.add(new JScrollPane(optionsPane), "dock west, width 25%!");
 				
-				//TODO this part makes a user pane where the user's information will be displayed				
-				//TODO add the rest of these
+				// A pane displaying information about the user
 				userPane = new PlayerPane(Color.LIGHT_GRAY, defaultFont, titleFont, mainGame);
 				frame.add(new JScrollPane(userPane), "dock east, width 25%!");
 
