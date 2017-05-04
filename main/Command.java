@@ -82,6 +82,7 @@ public class Command {
 			emptyCommand.new gainExperience();
 			emptyCommand.new setRace();
 			emptyCommand.new buffStats();
+			emptyCommand.new setLocation();
 		}
 		String[] args = command.split(" ");
 		try{
@@ -188,6 +189,7 @@ public class Command {
 	}
 	
 	/**
+	 * The command to get the player's location
 	 * USAGE: "getLocation"
 	 */
 	public class getLocation extends Command{
@@ -203,7 +205,12 @@ public class Command {
 	}
 	
 	/**
+	 * The command to set the player's location
+	 * USAGE: "setLocation [xCoordinate] [yCoordinate]"
 	 */
+	public class setLocation extends Command{
+		public setLocation(){
+			super("setLocation", "Moves the player to the specified location", "x coordinate, y coordinate");
 		}
 		@Override
 		public void executeCommand(String[] command){
