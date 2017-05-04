@@ -25,6 +25,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import display.MainPane.MainPaneMode;
 import main.Main;
 import net.miginfocom.swing.MigLayout;
 
@@ -213,6 +214,13 @@ public class MainDisplay {
 				userPane.updatePane();
 				frame.repaint();
 				frame.revalidate();
+				if(mainPane.mode == MainPaneMode.MAZE){
+					try{
+						((JTextArea) mainPane.getComponents()[0]).setText(mainGame.world.toString());
+					}catch(Exception e){
+						
+					}
+				}
 			}
 		});
 	}

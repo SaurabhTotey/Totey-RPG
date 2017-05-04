@@ -6,6 +6,7 @@ package main;
 import java.util.HashMap;
 
 import character.Race;
+import world.Maze;
 
 /**
  * @author Saurabh Totey
@@ -75,6 +76,7 @@ public class Command {
 		Command emptyCommand = new Command("doNothing", "Does nothing.");
 		allCommands.remove("doNothing", emptyCommand);
 		emptyCommand.new help();
+		emptyCommand.new getLocation();
 		if(Main.main.testingMode){
 			emptyCommand.new refresh();
 			emptyCommand.new gainExperience();
@@ -182,6 +184,33 @@ public class Command {
 			for(int i = 0; i < runNum; i++){
 				Main.main.mainPlayer.gainLevelUpStats();
 			}
+		}
+	}
+	
+	/**
+	 * USAGE: "getLocation"
+	 */
+	public class getLocation extends Command{
+		public getLocation(){
+			super("getLocation", "Gets the player's location");
+		}
+		@Override
+		public void executeCommand(String[] command){
+			super.executeCommand(command);
+			int[] playerCoordinates = Maze.chunkCoordinatesToAbsolute(Main.main.world.playerLocation);
+			Main.log("Your location is (" + playerCoordinates[0] + ", " + playerCoordinates[1] + ")");
+		}
+	}
+	
+	/**
+	 */
+		}
+		@Override
+		public void executeCommand(String[] command){
+			super.executeCommand(command);
+			int xCoordinate = Integer.parseInt(command[1]);
+			int yCoordinate = Integer.parseInt(command[2]);
+			Main.main.world.movePlayerTo(xCoordinate, yCoordinate);
 		}
 	}
 

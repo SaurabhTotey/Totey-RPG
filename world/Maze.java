@@ -73,10 +73,7 @@ public class Maze extends HashMap<String, Chunk>{
 			this.generateChunk(0, 0);
 		}
 		this.get(0, 0).terrain[Chunk.chunkLength / 2][Chunk.chunkLength / 2] = playerTile;
-		playerLocation[0] = 0;
-		playerLocation[1] = 0;
-		playerLocation[2] = Chunk.chunkLength / 2;
-		playerLocation[3] = Chunk.chunkLength / 2;
+		this.movePlayerTo(Chunk.chunkLength / 2, Chunk.chunkLength / 2);
 	}
 	
 	/**
@@ -233,22 +230,15 @@ public class Maze extends HashMap<String, Chunk>{
 	}
 	
 	/**
-	 * Sends the player to a certain chunk
-	 * Always puts the player in the center of the chunk
-	 * @param xChunkCoordinate the x-coordinate of the chunk to send the player
-	 * @param yChunkCoordinate the y-coordinate of the chunk to send the player
-	 */
-	public void setCoordsByChunk(int xChunkCoordinate, int yChunkCoordinate){
-		//TODO make this
-	}
-	
-	/**
 	 * Sends the player to a specific location
-	 * @param xChunkCoordinate the x-coordinate of where to send the player
-	 * @param yChunkCoordinate the y-coordinate of where to send the player
+	 * @param xCoordinate the x-coordinate of where to send the player
+	 * @param yCoordinate the y-coordinate of where to send the player
 	 */
-	public void setCoordsByAbsolute(int xChunkCoordinate, int yChunkCoordinate){
-		//TODO make this
+	public void movePlayerTo(int xCoordinate, int yCoordinate){
+		int[] absoluteCoordinates = new int[2];
+		absoluteCoordinates[0] = xCoordinate;
+		absoluteCoordinates[1] = yCoordinate;
+		this.playerLocation = absoluteToChunkCoordinates(absoluteCoordinates);
 	}
 	
 	/**

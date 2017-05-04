@@ -56,10 +56,9 @@ public class MainPane extends JPanel {
 	 */
 	public void setMode(MainPaneMode newMode){
 		this.removeAll();
-		this.mode = newMode;
 		switch(newMode){
 			case MAZE:
-				JTextArea mazeToDisp = new JTextArea(this.mainGame.world.toString());
+				JTextArea mazeToDisp = new JTextArea();
 				mazeToDisp.setFont(defaultFont);
 				mazeToDisp.setEditable(false);
 				this.add(mazeToDisp, "push, grow, fit");
@@ -68,6 +67,7 @@ public class MainPane extends JPanel {
 				//TODO make this once inventory screen is made
 				break;
 		}
+		this.mode = newMode;
 	}
 
 }
