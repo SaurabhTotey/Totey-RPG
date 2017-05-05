@@ -5,11 +5,15 @@ package display;
 
 import java.awt.Color;
 import java.awt.Font;
-
+import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 
 import main.Main;
+import world.Maze.Direction;
 
 /**
  * @author Saurabh Totey
@@ -47,6 +51,7 @@ public class MainPane extends JPanel {
 		this.defaultFont = defaultFont;
 		this.titleFont = titleFont;
 		this.mainGame = mainGame;
+		this.requestFocusInWindow();
 	}
 	
 	/**
@@ -62,12 +67,35 @@ public class MainPane extends JPanel {
 				mazeToDisp.setFont(defaultFont);
 				mazeToDisp.setEditable(false);
 				this.add(mazeToDisp, "push, grow, fit");
+				this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("W"), "up");
+				this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("A"), "left");
+				this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("S"), "down");
+				this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("D"), "right");
+				this.getActionMap().put("down", new MoveAction(Direction.DOWN));
+				this.getActionMap().put("left", new MoveAction(Direction.LEFT));
+				this.getActionMap().put("up", new MoveAction(Direction.UP));
+				this.getActionMap().put("right", new MoveAction(Direction.RIGHT));
 				break;
 			case INVENTORY:
 				//TODO make this once inventory screen is made
 				break;
 		}
 		this.mode = newMode;
+	}
+	
+	private class MoveAction extends AbstractAction{
+		
+		public Direction direction;
+
+		public MoveAction(Direction direction){
+			this.direction = direction;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			mainGame.world.move(direction);
+		}
+		
 	}
 
 }

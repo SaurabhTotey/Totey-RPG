@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import main.Main;
+
 /**
  * @author Saurabh Totey
  * The maze is where the player can explore
@@ -48,8 +50,8 @@ public class Maze extends HashMap<String, Chunk>{
 	 * {chunkX, chunkY, playerX, playerY}
 	 */
 	public int[] playerLocation = new int[4];
-	public static int displayWidth = 81;
-	public static int displayHeight = 61;
+	public static int displayWidth = 101;
+	public static int displayHeight = 57;
 	public static String emptyTile = " "; //TODO pass different on/off tiles to chunks based on distance from center
 	public static String wallTile = "|"; //The unicode black/white boxes don't work because monospace doesn't work for them :(
 	public static String playerTile = "P";
@@ -97,16 +99,12 @@ public class Maze extends HashMap<String, Chunk>{
 	 */
 	public synchronized void generateChunk(int x, int y){
 		//Gets the parts of the adjacent chunks the new chunk should touch
-		HashMap<Direction, Chunk> touching = new HashMap<Direction, Chunk>();
-		touching.put(Direction.UP, this.get(x + ", " + (y + 1)));
-		touching.put(Direction.DOWN, this.get(x + ", " + (y - 1)));
-		touching.put(Direction.LEFT, this.get((x - 1) + ", " + y));
-		touching.put(Direction.RIGHT, this.get((x + 1) + ", " + y));
 		HashMap<Direction, ArrayList<Point>> needToTouch = new HashMap<Direction, ArrayList<Point>>();
 		for(Direction direction : Direction.values()){
 			needToTouch.put(direction, new ArrayList<Point>());
 			for(int i = 0; i < Chunk.chunkLength; i++){
-				if(touching.get(direction) == null || isTraversable(touching.get(direction).terrain[Math.abs(direction.xModifier) * (-i) + i + (-1 + direction.xModifier) * direction.xModifier * (Chunk.chunkLength - 1) / 2][Math.abs(direction.yModifier) * (-i) + i + (-1 + direction.yModifier) * direction.yModifier * (Chunk.chunkLength - 1) / 2])){
+				Chunk touching = this.get((x + direction.xModifier) + ", " + (y + direction.yModifier));
+				if(touching == null || isTraversable(touching.terrain[Math.abs(direction.xModifier) * (-i) + i + (-1 + direction.xModifier) * direction.xModifier * (Chunk.chunkLength - 1) / 2][Math.abs(direction.yModifier) * (-i) + i + (-1 + direction.yModifier) * direction.yModifier * (Chunk.chunkLength - 1) / 2])){
 					needToTouch.get(direction).add(new Point(Math.abs(direction.xModifier) * (-i) + i + (1 + direction.xModifier) * direction.xModifier * (Chunk.chunkLength - 1) / 2, Math.abs(direction.yModifier) * (-i) + i + (1 + direction.yModifier) * direction.yModifier * (Chunk.chunkLength - 1) / 2));
 				}
 			}
@@ -121,7 +119,7 @@ public class Maze extends HashMap<String, Chunk>{
 		if(chunkType >= 3){			//Gens normal chunk
 			ArrayList<Point> branchCoords = new ArrayList<Point>();
 			ArrayList<Point> edgeCoords = new ArrayList<Point>();
-			branchCoords.add(new Point((int) (Math.random() * Chunk.chunkLength), (int) (Math.random() * Chunk.chunkLength)));
+			branchCoords.add((x == 0 && y == 0)? new Point() : new Point((int) (Math.random() * Chunk.chunkLength), (int) (Math.random() * Chunk.chunkLength)));
 			LinkedList<Direction> directionToTouch = new LinkedList<Direction>(Arrays.asList(Direction.values()));
 			do{
 				Point placeToStart = branchCoords.get((int) (Math.random() * branchCoords.size()));
@@ -206,8 +204,8 @@ public class Maze extends HashMap<String, Chunk>{
 	 */
 	public String toString(){
 		String toReturn = "";
-		for(int y = 0; y < displayWidth; y++){
-			for(int x = 0; x < displayHeight; x++){
+		for(int y = 0; y < displayHeight; y++){
+			for(int x = 0; x < displayWidth; x++){
 				int[] locationToGet = chunkCoordinatesToAbsolute(this.playerLocation.clone());
 				locationToGet[0] += x - displayWidth / 2;
 				locationToGet[1] += y - displayHeight / 2;
@@ -226,7 +224,10 @@ public class Maze extends HashMap<String, Chunk>{
 	 * @param direction where to move the player, or the opposite of which direction to move the map
 	 */
 	public void move(Direction direction){
-		
+		int[] playerCoords = chunkCoordinatesToAbsolute(this.playerLocation);
+		playerCoords[0] += direction.xModifier;
+		playerCoords[1] += direction.yModifier;
+		this.movePlayerTo(playerCoords[0], playerCoords[1]);
 	}
 	
 	/**
@@ -238,7 +239,14 @@ public class Maze extends HashMap<String, Chunk>{
 		int[] absoluteCoordinates = new int[2];
 		absoluteCoordinates[0] = xCoordinate;
 		absoluteCoordinates[1] = yCoordinate;
+		if(!isTraversable(getStrAt(absoluteCoordinates))){
+			Main.log("You realized that you coudn't walk through walls and you bumped your head.");
+			//TODO Decrement health of player
+			return;
+		}
+		this.get(this.playerLocation[0], this.playerLocation[1]).terrain[this.playerLocation[2]][this.playerLocation[3]] = emptyTile;
 		this.playerLocation = absoluteToChunkCoordinates(absoluteCoordinates);
+		this.get(this.playerLocation[0], this.playerLocation[1]).terrain[this.playerLocation[2]][this.playerLocation[3]] = playerTile;
 	}
 	
 	/**
@@ -262,8 +270,8 @@ public class Maze extends HashMap<String, Chunk>{
 	 */
 	public static int[] chunkCoordinatesToAbsolute(int[] chunkCoordinates){
 		int[] toReturn = new int[2];
-		toReturn[0] = chunkCoordinates[0] * Chunk.chunkLength + chunkCoordinates[2] - ((chunkCoordinates[0] >= 0)? 0 : Chunk.chunkLength);
-		toReturn[1] = chunkCoordinates[1] * Chunk.chunkLength + chunkCoordinates[3] - ((chunkCoordinates[1] >= 0)? 0 : Chunk.chunkLength);
+		toReturn[0] = chunkCoordinates[0] * Chunk.chunkLength + chunkCoordinates[2];
+		toReturn[1] = chunkCoordinates[1] * Chunk.chunkLength + chunkCoordinates[3];
 		return toReturn;
 	}
 	
