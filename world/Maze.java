@@ -50,11 +50,12 @@ public class Maze extends HashMap<String, Chunk>{
 	 * {chunkX, chunkY, playerX, playerY}
 	 */
 	public int[] playerLocation = new int[4];
+	public String lastSteppedOn = emptyTile;
 	public static int displayWidth = 101;
 	public static int displayHeight = 57;
 	public static String emptyTile = " "; //TODO pass different on/off tiles to chunks based on distance from center
 	public static String wallTile = "|"; //The unicode black/white boxes don't work because monospace doesn't work for them :(
-	public static String playerTile = "P";
+	public static String playerTile = "P"; //TODO change all of these tiles to enums
 	public static String enemyTile = "E";
 	public static String bossTile = "B";
 	public static String portalTile = "O";
@@ -74,8 +75,9 @@ public class Maze extends HashMap<String, Chunk>{
 		while(this.get(0, 0).terrain[Chunk.chunkLength / 2][Chunk.chunkLength / 2].equals(wallTile)){
 			this.generateChunk(0, 0);
 		}
-		this.get(0, 0).terrain[Chunk.chunkLength / 2][Chunk.chunkLength / 2] = playerTile;
-		this.movePlayerTo(Chunk.chunkLength / 2, Chunk.chunkLength / 2);
+		this.get(0, 0).terrain[Chunk.chunkLength / 2][Chunk.chunkLength / 2] = portalTile;
+		StepAction.initAllStepActions();
+		this.movePlayerTo(new int[]{Chunk.chunkLength / 2, Chunk.chunkLength / 2});
 	}
 	
 	/**
@@ -85,7 +87,7 @@ public class Maze extends HashMap<String, Chunk>{
 	 * @param yCoordinate the y coordinate of the chunk to get
 	 * @return the chunk at the specified x and y coordinates
 	 */
-	public Chunk get(int xCoordinate, int yCoordinate){
+	public synchronized Chunk get(int xCoordinate, int yCoordinate){
 		if(this.get(xCoordinate + ", " + yCoordinate) == null){
 			this.generateChunk(xCoordinate, yCoordinate);
 		}
@@ -227,26 +229,24 @@ public class Maze extends HashMap<String, Chunk>{
 		int[] playerCoords = chunkCoordinatesToAbsolute(this.playerLocation);
 		playerCoords[0] += direction.xModifier;
 		playerCoords[1] += direction.yModifier;
-		this.movePlayerTo(playerCoords[0], playerCoords[1]);
+		this.movePlayerTo(playerCoords);
 	}
 	
 	/**
 	 * Sends the player to a specific location
-	 * @param xCoordinate the x-coordinate of where to send the player
-	 * @param yCoordinate the y-coordinate of where to send the player
+	 * @param absoluteCoordinates where to move the player
 	 */
-	public void movePlayerTo(int xCoordinate, int yCoordinate){
-		int[] absoluteCoordinates = new int[2];
-		absoluteCoordinates[0] = xCoordinate;
-		absoluteCoordinates[1] = yCoordinate;
-		if(!isTraversable(getStrAt(absoluteCoordinates))){
+	public void movePlayerTo(int[] absoluteCoordinates){
+		String steppedOn = getStrAt(absoluteCoordinates);
+		if(!isTraversable(steppedOn)){
 			Main.log("You realized that you coudn't walk through walls and you bumped your head.");
-			//TODO Decrement health of player
-			return;
+		}else{
+			this.get(this.playerLocation[0], this.playerLocation[1]).terrain[this.playerLocation[2]][this.playerLocation[3]] = (this.lastSteppedOn.equals(portalTile) || this.lastSteppedOn.equals(villagerTile))? this.lastSteppedOn : emptyTile;
+			this.playerLocation = absoluteToChunkCoordinates(absoluteCoordinates);
+			this.get(this.playerLocation[0], this.playerLocation[1]).terrain[this.playerLocation[2]][this.playerLocation[3]] = playerTile;
 		}
-		this.get(this.playerLocation[0], this.playerLocation[1]).terrain[this.playerLocation[2]][this.playerLocation[3]] = emptyTile;
-		this.playerLocation = absoluteToChunkCoordinates(absoluteCoordinates);
-		this.get(this.playerLocation[0], this.playerLocation[1]).terrain[this.playerLocation[2]][this.playerLocation[3]] = playerTile;
+		this.lastSteppedOn = steppedOn;
+		StepAction.tileActions.get(steppedOn).performAction(absoluteCoordinates[0], absoluteCoordinates[1]);
 	}
 	
 	/**
@@ -269,10 +269,7 @@ public class Maze extends HashMap<String, Chunk>{
 	 * @return absolute coordinates for that point
 	 */
 	public static int[] chunkCoordinatesToAbsolute(int[] chunkCoordinates){
-		int[] toReturn = new int[2];
-		toReturn[0] = chunkCoordinates[0] * Chunk.chunkLength + chunkCoordinates[2];
-		toReturn[1] = chunkCoordinates[1] * Chunk.chunkLength + chunkCoordinates[3];
-		return toReturn;
+		return new int[]{chunkCoordinates[0] * Chunk.chunkLength + chunkCoordinates[2], chunkCoordinates[1] * Chunk.chunkLength + chunkCoordinates[3]};
 	}
 	
 	/**

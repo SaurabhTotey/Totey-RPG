@@ -67,10 +67,10 @@ public class MainPane extends JPanel {
 				mazeToDisp.setFont(defaultFont);
 				mazeToDisp.setEditable(false);
 				this.add(mazeToDisp, "push, grow, fit");
-				this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("W"), "up");
-				this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("A"), "left");
-				this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("S"), "down");
-				this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("D"), "right");
+				this.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke("W"), "up");
+				this.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke("A"), "left");
+				this.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke("S"), "down");
+				this.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke("D"), "right");
 				this.getActionMap().put("down", new MoveAction(Direction.DOWN));
 				this.getActionMap().put("left", new MoveAction(Direction.LEFT));
 				this.getActionMap().put("up", new MoveAction(Direction.UP));

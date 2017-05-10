@@ -41,7 +41,7 @@ public class Command {
 	 */
 	public Command(String commandName, String description, String parameters) {
 		this.commandName = commandName;
-		allCommands.putIfAbsent(commandName, this);
+		allCommands.put(commandName, this);
 		this.params = parameters;
 		this.description = description;
 	}
@@ -83,6 +83,7 @@ public class Command {
 			emptyCommand.new setRace();
 			emptyCommand.new buffStats();
 			emptyCommand.new setLocation();
+			emptyCommand.new betterGetLocation();
 		}
 		String[] args = command.split(" ");
 		try{
@@ -215,9 +216,31 @@ public class Command {
 		@Override
 		public void executeCommand(String[] command){
 			super.executeCommand(command);
-			int xCoordinate = Integer.parseInt(command[1]);
-			int yCoordinate = Integer.parseInt(command[2]);
-			Main.main.world.movePlayerTo(xCoordinate, yCoordinate);
+			int[] coordsToMove = {Integer.parseInt(command[1]), Integer.parseInt(command[2])};
+			Main.main.world.movePlayerTo(coordsToMove);
+		}
+	}
+	
+	/**
+	 * The command to either get the player's location or the location of a tile at specified coordinates
+	 * USAGE: "betterGetLocation [xCoordinateOfTileToGet] [yCoordinateOfTileToGet]"
+	 */
+	public class betterGetLocation extends Command{
+		public betterGetLocation(){
+			super("getLocation", "Gets the player's location if given no coordinates, or get the tile at the specified coordinates", "x coordinate, y coordinate");
+		}
+		@Override
+		public void executeCommand(String[] command){
+			super.executeCommand(command);
+			if(command.length == 1){
+				new getLocation().executeCommand(command);
+				new betterGetLocation();
+			}else{
+				int[] coords = new int[2];
+				coords[0] = Integer.parseInt(command[1]);
+				coords[1] = Integer.parseInt(command[2]);
+				Main.log("The tile at (" + coords[0] + ", " + coords[1] + ") is \""  + Main.main.world.getStrAt(coords) + "\"");
+			}
 		}
 	}
 
