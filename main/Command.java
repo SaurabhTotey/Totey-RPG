@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import character.Race;
 import world.Maze;
+import world.Maze.Tile;
 
 /**
  * @author Saurabh Totey
@@ -82,7 +83,7 @@ public class Command {
 			emptyCommand.new gainExperience();
 			emptyCommand.new setRace();
 			emptyCommand.new buffStats();
-			emptyCommand.new setLocation();
+			emptyCommand.new betterSetLocation();
 			emptyCommand.new betterGetLocation();
 		}
 		String[] args = command.split(" ");
@@ -236,10 +237,30 @@ public class Command {
 				new getLocation().executeCommand(command);
 				new betterGetLocation();
 			}else{
-				int[] coords = new int[2];
-				coords[0] = Integer.parseInt(command[1]);
-				coords[1] = Integer.parseInt(command[2]);
+				int[] coords = {Integer.parseInt(command[1]), Integer.parseInt(command[2])};
 				Main.log("The tile at (" + coords[0] + ", " + coords[1] + ") is \""  + Main.main.world.getStrAt(coords) + "\"");
+			}
+		}
+	}
+	
+	/**
+	 * The command to either set the player's location or to set the location of another tile
+	 */
+	public class betterSetLocation extends Command{
+		public betterSetLocation(){
+			super("setLocation", "Either teleports the player to the given coordinates or sets the tile at the given coordinates", "x coordinate, y coordinate, tile");
+		}
+		@Override
+		public void executeCommand(String[] command){
+			super.executeCommand(command);
+			if(command.length == 3){
+				new setLocation().executeCommand(command);
+				new betterSetLocation();
+			}else if(command.length > 3 && Maze.tileNameToTile.get(command[3]) != Tile.PLAYER){
+				int[] chunkCoords = Maze.absoluteToChunkCoordinates(new int[]{Integer.parseInt(command[1]), Integer.parseInt(command[2])});
+				Main.main.world.get(chunkCoords[0], chunkCoords[1]).terrain[chunkCoords[2]][chunkCoords[3]] = command[3];
+			}else{
+				throw new Error();
 			}
 		}
 	}

@@ -6,6 +6,7 @@ package world;
 import java.util.HashMap;
 
 import main.Main;
+import world.Maze.Tile;
 
 /**
  * @author Saurabh Totey
@@ -44,7 +45,7 @@ public class StepAction{
 	 */
 	public class battleEnemy extends StepAction{
 		public battleEnemy(){
-			super(Maze.enemyTile);
+			super(Tile.ENEMY.representation);
 		}
 		@Override
 		public void performAction(int xCoordinate, int yCoordinate){
@@ -58,7 +59,7 @@ public class StepAction{
 	 */
 	public class bonkHead extends StepAction{
 		public bonkHead(){
-			super(Maze.wallTile);
+			super(Tile.WALL.representation);
 		}
 		@Override
 		public void performAction(int xCoordinate, int yCoordinate){
@@ -72,7 +73,7 @@ public class StepAction{
 	 */
 	public class gatherItem extends StepAction{
 		public gatherItem(){
-			super(Maze.itemTile);
+			super(Tile.ITEM.representation);
 		}
 		@Override
 		public void performAction(int xCoordinate, int yCoordinate){
@@ -86,7 +87,7 @@ public class StepAction{
 	 */
 	public class startBossFight extends StepAction{
 		public startBossFight(){
-			super(Maze.bossTile);
+			super(Tile.BOSS.representation);
 		}
 		@Override
 		public void performAction(int xCoordinate, int yCoordinate){
@@ -101,7 +102,7 @@ public class StepAction{
 	public class teleportWithPortal extends StepAction{
 		private int[] lastPlayerLocation = null;
 		public teleportWithPortal(){
-			super(Maze.portalTile);
+			super(Tile.PORTAL.representation);
 		}
 		@Override
 		public void performAction(int xCoordinate, int yCoordinate){
@@ -118,7 +119,7 @@ public class StepAction{
 	 */
 	public class dialogueWithVillager extends StepAction{
 		public dialogueWithVillager(){
-			super(Maze.villagerTile);
+			super(Tile.VILLAGER.representation);
 		}
 		@Override
 		public void performAction(int xCoordinate, int yCoordinate){
@@ -130,7 +131,7 @@ public class StepAction{
 	 * Constructs all of the step actions which automatically register themselves to the hashmap of tiles to actions
 	 */
 	public static void initAllStepActions(){
-		StepAction emptyAction = new StepAction(Maze.emptyTile);
+		StepAction emptyAction = new StepAction(Tile.EMPTY.representation);
 		emptyAction.new battleEnemy();
 		emptyAction.new bonkHead();
 		emptyAction.new gatherItem();

@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import main.Main;
-
 /**
  * @author Saurabh Totey
  * The maze is where the player can explore
@@ -45,22 +43,46 @@ public class Maze extends HashMap<String, Chunk>{
 	}
 	
 	/**
+	 * All the types of tiles and their properties
+	 * Used for defining maze appearance and player movement through maze
+	 */
+	public enum Tile{
+		EMPTY(" ", true, false), WALL("|", false, true), PLAYER("P", false, true),
+		ENEMY("E", true, true), BOSS("B", true, true), PORTAL("O", true, false), ITEM("I", true, true),
+		VILLAGER("V", false, false);
+		
+		//░ for possible emptyTile
+		//█ for possible wallTile
+		
+		public String representation;
+		public boolean isTraversable;
+		public boolean getsReplacedWhenSteppedOn;
+		
+		/**
+		 * The constructor for a tile
+		 * The constructor specifies its properties
+		 * @param representation how the tile appears in the map
+		 * @param isTraversable whether the player can move on this tile
+		 * @param getsReplacedWhenSteppedOn whether the tile should get destroyed after the player walks on it
+		 */
+		private Tile(String representation, boolean isTraversable, boolean getsReplacedWhenSteppedOn){
+			this.representation = representation;
+			this.isTraversable = isTraversable;
+			this.getsReplacedWhenSteppedOn = getsReplacedWhenSteppedOn;
+			tileNameToTile.put(representation, this);
+		}
+	}
+	
+	/**
 	 * Properties of the maze such as how things would be represented
 	 * Player location is stored in an array of length 4 where the location is represented as
 	 * {chunkX, chunkY, playerX, playerY}
 	 */
 	public int[] playerLocation = new int[4];
-	public String lastSteppedOn = emptyTile;
+	public Tile lastSteppedOn = Tile.EMPTY;
 	public static int displayWidth = 101;
 	public static int displayHeight = 57;
-	public static String emptyTile = " "; //TODO pass different on/off tiles to chunks based on distance from center
-	public static String wallTile = "|"; //The unicode black/white boxes don't work because monospace doesn't work for them :(
-	public static String playerTile = "P"; //TODO change all of these tiles to enums
-	public static String enemyTile = "E";
-	public static String bossTile = "B";
-	public static String portalTile = "O";
-	public static String itemTile = "I";
-	public static String villagerTile = "V";
+	public static HashMap<String, Tile> tileNameToTile = new HashMap<String, Tile>();
 	
 	/**
 	 * Constructs the maze object for the player to explore
@@ -72,10 +94,10 @@ public class Maze extends HashMap<String, Chunk>{
 				this.generateChunk(i, j);
 			}
 		}
-		while(this.get(0, 0).terrain[Chunk.chunkLength / 2][Chunk.chunkLength / 2].equals(wallTile)){
+		while(this.get(0, 0).terrain[Chunk.chunkLength / 2][Chunk.chunkLength / 2].equals(Tile.WALL.representation)){
 			this.generateChunk(0, 0);
 		}
-		this.get(0, 0).terrain[Chunk.chunkLength / 2][Chunk.chunkLength / 2] = portalTile;
+		this.get(0, 0).terrain[Chunk.chunkLength / 2][Chunk.chunkLength / 2] = Tile.PORTAL.representation;
 		StepAction.initAllStepActions();
 		this.movePlayerTo(new int[]{Chunk.chunkLength / 2, Chunk.chunkLength / 2});
 	}
@@ -98,6 +120,7 @@ public class Maze extends HashMap<String, Chunk>{
 	 * Generates a chunk object and adds it the maze
 	 * Each chunk is stored in a hashmap with the String key being "[x], [y]" and the chunk being the output
 	 * This way chunks can easily be accessed without having to manually iterate through lists
+	 * TODO pass different on/off tiles to chunks based on distance from center
 	 */
 	public synchronized void generateChunk(int x, int y){
 		//Gets the parts of the adjacent chunks the new chunk should touch
@@ -106,7 +129,7 @@ public class Maze extends HashMap<String, Chunk>{
 			needToTouch.put(direction, new ArrayList<Point>());
 			for(int i = 0; i < Chunk.chunkLength; i++){
 				Chunk touching = this.get((x + direction.xModifier) + ", " + (y + direction.yModifier));
-				if(touching == null || isTraversable(touching.terrain[Math.abs(direction.xModifier) * (-i) + i + (-1 + direction.xModifier) * direction.xModifier * (Chunk.chunkLength - 1) / 2][Math.abs(direction.yModifier) * (-i) + i + (-1 + direction.yModifier) * direction.yModifier * (Chunk.chunkLength - 1) / 2])){
+				if(touching == null || tileNameToTile.get(touching.terrain[Math.abs(direction.xModifier) * (-i) + i + (-1 + direction.xModifier) * direction.xModifier * (Chunk.chunkLength - 1) / 2][Math.abs(direction.yModifier) * (-i) + i + (-1 + direction.yModifier) * direction.yModifier * (Chunk.chunkLength - 1) / 2]).isTraversable){
 					needToTouch.get(direction).add(new Point(Math.abs(direction.xModifier) * (-i) + i + (1 + direction.xModifier) * direction.xModifier * (Chunk.chunkLength - 1) / 2, Math.abs(direction.yModifier) * (-i) + i + (1 + direction.yModifier) * direction.yModifier * (Chunk.chunkLength - 1) / 2));
 				}
 			}
@@ -115,7 +138,7 @@ public class Maze extends HashMap<String, Chunk>{
 		String[][] terrain = new String[Chunk.chunkLength][Chunk.chunkLength];
 		for(int i = 0; i < Chunk.chunkLength; i++){
 			for(int j = 0; j < Chunk.chunkLength; j++){
-				terrain[i][j] = wallTile;
+				terrain[i][j] = Tile.WALL.representation;
 			}
 		}
 		if(chunkType >= 3){			//Gens normal chunk
@@ -156,21 +179,21 @@ public class Maze extends HashMap<String, Chunk>{
 		}else if(chunkType == 2){	//Gens boss chunk
 			for(int i = 0; i < Chunk.chunkLength; i++){
 				for(int j = 0; j < Chunk.chunkLength; j++){
-					terrain[i][j] = enemyTile;
+					terrain[i][j] = Tile.ENEMY.representation;
 				}
 			}
-			terrain[Chunk.chunkLength / 2][Chunk.chunkLength / 2] = bossTile;
+			terrain[Chunk.chunkLength / 2][Chunk.chunkLength / 2] = Tile.BOSS.representation;
 		}else if(chunkType == 1){	//Gens item chunk
 			for(int i = 1; i < Chunk.chunkLength - 1; i++){
 				for(int j = 1; j < Chunk.chunkLength - 1; j++){
-					terrain[i][j] = itemTile;
+					terrain[i][j] = Tile.ITEM.representation;
 				}
 			}
 		}else if(chunkType == 0){	//Gens village
-			this.put(x + ", " + y, new Village(x, y, emptyTile, wallTile));
+			this.put(x + ", " + y, new Village(x, y, Tile.EMPTY.representation, Tile.WALL.representation));
 			return;
 		}
-		this.put(x + ", " + y, new Chunk(terrain, x, y, emptyTile, wallTile));
+		this.put(x + ", " + y, new Chunk(terrain, x, y, Tile.EMPTY.representation, Tile.WALL.representation));
 	}
 	
 	/**
@@ -180,23 +203,14 @@ public class Maze extends HashMap<String, Chunk>{
 	public String getEmptyTile(){
 		int randSelection = (int) (Math.random() * 50001);
 		if(randSelection <= 2500){
-			return enemyTile; // 1/20 chance
+			return Tile.ENEMY.representation; // 1/20 chance
 		}else if(randSelection <= 2510){
-			return itemTile; // 1/5000 chance
+			return Tile.ITEM.representation; // 1/5000 chance
 		}else if(randSelection == 2511){
-			return portalTile; // 1/50000 chance
+			return Tile.PORTAL.representation; // 1/50000 chance
 		}else{
-			return emptyTile;
+			return Tile.EMPTY.representation;
 		}
-	}
-	
-	/**
-	 * Returns if the tile is a traversable tile (so not a wall or villager tile)
-	 * @param tile the tile to check for traversability
-	 * @return whether or whether not the tile is traversable
-	 */
-	public static boolean isTraversable(String tile){
-		return (emptyTile + itemTile + enemyTile + portalTile + bossTile + playerTile).contains(tile);
 	}
 	 
 	/**
@@ -225,7 +239,7 @@ public class Maze extends HashMap<String, Chunk>{
 	 * Will generate new chunks if it needs to
 	 * @param direction where to move the player, or the opposite of which direction to move the map
 	 */
-	public void move(Direction direction){
+	public synchronized void move(Direction direction){
 		int[] playerCoords = chunkCoordinatesToAbsolute(this.playerLocation);
 		playerCoords[0] += direction.xModifier;
 		playerCoords[1] += direction.yModifier;
@@ -236,16 +250,14 @@ public class Maze extends HashMap<String, Chunk>{
 	 * Sends the player to a specific location
 	 * @param absoluteCoordinates where to move the player
 	 */
-	public void movePlayerTo(int[] absoluteCoordinates){
+	public synchronized void movePlayerTo(int[] absoluteCoordinates){
 		String steppedOn = getStrAt(absoluteCoordinates);
-		if(!isTraversable(steppedOn)){
-			Main.log("You realized that you coudn't walk through walls and you bumped your head.");
-		}else{
-			this.get(this.playerLocation[0], this.playerLocation[1]).terrain[this.playerLocation[2]][this.playerLocation[3]] = (this.lastSteppedOn.equals(portalTile) || this.lastSteppedOn.equals(villagerTile))? this.lastSteppedOn : emptyTile;
+		if(tileNameToTile.get(steppedOn).isTraversable){
+			this.get(this.playerLocation[0], this.playerLocation[1]).terrain[this.playerLocation[2]][this.playerLocation[3]] = (lastSteppedOn.getsReplacedWhenSteppedOn)? Tile.EMPTY.representation : lastSteppedOn.representation;
 			this.playerLocation = absoluteToChunkCoordinates(absoluteCoordinates);
-			this.get(this.playerLocation[0], this.playerLocation[1]).terrain[this.playerLocation[2]][this.playerLocation[3]] = playerTile;
+			this.get(this.playerLocation[0], this.playerLocation[1]).terrain[this.playerLocation[2]][this.playerLocation[3]] = Tile.PLAYER.representation;
+			this.lastSteppedOn = tileNameToTile.get(steppedOn);
 		}
-		this.lastSteppedOn = steppedOn;
 		StepAction.tileActions.get(steppedOn).performAction(absoluteCoordinates[0], absoluteCoordinates[1]);
 	}
 	

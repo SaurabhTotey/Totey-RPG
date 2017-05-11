@@ -55,7 +55,7 @@ public class OptionPane extends JPanel {
 	 * pane is always one of these
 	 */
 	public enum OptionsPaneOptions {
-		DEFAULT("Options"), RACES("Choose race"), STATS_GAMBLE_BIG("Choose Stat"), STATS_GAMBLE_SMALL("Choose Stat");
+		DEFAULT("Options"), RACES("Choose race"), STATS_GAMBLE_BIG("Choose Stat"), STATS_GAMBLE_SMALL("Choose Stat"), TELEPORT_OPTIONS("Teleport where?");
 
 		public String title;
 
@@ -95,6 +95,8 @@ public class OptionPane extends JPanel {
 							}
 						});
 						add(invButton, "width 90%!, align center, wrap");
+						//TODO height and width sliders
+						//TODO add quit button
 						break;
 					case RACES:
 						JButton[] options = {new JButton("Human"), new JButton("Robot"), new JButton("Shadow"), new JButton("Turtle"), new JButton("Bird")};
@@ -114,6 +116,9 @@ public class OptionPane extends JPanel {
 						break;
 					case STATS_GAMBLE_SMALL:
 						//TODO small stats gambling on optionspane
+						break;
+					case TELEPORT_OPTIONS:
+						//TODO display all visited portals
 						break;
 				}
 			}
