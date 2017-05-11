@@ -258,7 +258,7 @@ public class Command {
 				new betterSetLocation();
 			}else if(command.length > 3 && Maze.tileNameToTile.get(command[3]) != Tile.PLAYER){
 				int[] chunkCoords = Maze.absoluteToChunkCoordinates(new int[]{Integer.parseInt(command[1]), Integer.parseInt(command[2])});
-				Main.main.world.get(chunkCoords[0], chunkCoords[1]).terrain[chunkCoords[2]][chunkCoords[3]] = command[3];
+				Main.main.world.get(chunkCoords[0], chunkCoords[1]).terrain[chunkCoords[2]][chunkCoords[3]] = Maze.tileNameToTile.get(command[3]).representation; //Made it get the string of the tile from the hashmap given the string to make sure that an actual tile was placed
 			}else{
 				throw new Error();
 			}
