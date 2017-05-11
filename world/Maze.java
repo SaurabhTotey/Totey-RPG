@@ -80,8 +80,8 @@ public class Maze extends HashMap<String, Chunk>{
 	 */
 	public int[] playerLocation = new int[4];
 	public Tile lastSteppedOn = Tile.EMPTY;
-	public static int displayWidth = 101;
-	public static int displayHeight = 57;
+	public static int displayWidth = 51;
+	public static int displayHeight = 23;
 	public static HashMap<String, Tile> tileNameToTile = new HashMap<String, Tile>();
 	
 	/**

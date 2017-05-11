@@ -10,13 +10,21 @@ import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JButton;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JSpinner.DefaultEditor;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.text.DefaultFormatter;
 
 import main.Main;
 import net.miginfocom.swing.MigLayout;
+import world.Maze;
 
 /**
  * @author Saurabh Totey
@@ -32,6 +40,7 @@ public class OptionPane extends JPanel {
 	public Font defaultFont;
 	public Font titleFont;
 	public Main mainGame;
+	public OptionsPaneOptions mode;
 
 	/**
 	 * Makes this optionpane a jpanel with miglayout and with the given color
@@ -78,6 +87,7 @@ public class OptionPane extends JPanel {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
+				mode = type;
 				removeAll();
 				JLabel optionsTitle = new JLabel(type.title);
 				optionsTitle.setFont(titleFont);
@@ -95,8 +105,37 @@ public class OptionPane extends JPanel {
 							}
 						});
 						add(invButton, "width 90%!, align center, wrap");
-						//TODO height and width sliders
-						//TODO add quit button
+						JSpinner widthSpinner = new JSpinner(new SpinnerNumberModel(Maze.displayWidth, Integer.MIN_VALUE, Integer.MAX_VALUE, 1));
+						JSpinner heightSpinner = new JSpinner(new SpinnerNumberModel(Maze.displayHeight, Integer.MIN_VALUE, Integer.MAX_VALUE, 1));
+						JLabel titleForWidthSpinner = new JLabel("Adjust your maze width");
+						JLabel titleForHeightSpinner = new JLabel("Adjust your maze height");
+						titleForWidthSpinner.setFont(defaultFont);
+						titleForHeightSpinner.setFont(defaultFont);
+						titleForWidthSpinner.setHorizontalAlignment(SwingConstants.CENTER);
+						titleForHeightSpinner.setHorizontalAlignment(SwingConstants.CENTER);
+						widthSpinner.setFont(defaultFont);
+						heightSpinner.setFont(defaultFont);
+						((DefaultEditor) widthSpinner.getEditor()).getTextField().setHorizontalAlignment(SwingConstants.CENTER);
+						((DefaultEditor) heightSpinner.getEditor()).getTextField().setHorizontalAlignment(SwingConstants.CENTER);
+						((DefaultFormatter) ((JFormattedTextField) widthSpinner.getEditor().getComponent(0)).getFormatter()).setCommitsOnValidEdit(true);
+						((DefaultFormatter) ((JFormattedTextField) heightSpinner.getEditor().getComponent(0)).getFormatter()).setCommitsOnValidEdit(true);
+						widthSpinner.addChangeListener(new ChangeListener(){
+							@Override
+					        public void stateChanged(ChangeEvent e) {
+					            Maze.displayWidth = (Integer) ((JSpinner) e.getSource()).getValue();
+					        }
+						});
+						heightSpinner.addChangeListener(new ChangeListener(){
+							@Override
+					        public void stateChanged(ChangeEvent e) {
+					            Maze.displayHeight = (Integer) ((JSpinner) e.getSource()).getValue();
+					        }
+						});
+						add(titleForWidthSpinner, "width 90%, align center, wrap");
+						add(widthSpinner, "width 90%, align center, wrap");
+						add(titleForHeightSpinner, "width 90%, align center, wrap");
+						add(heightSpinner, "width 90%, align center, wrap");
+						//TODO add save and quit button
 						break;
 					case RACES:
 						JButton[] options = {new JButton("Human"), new JButton("Robot"), new JButton("Shadow"), new JButton("Turtle"), new JButton("Bird")};

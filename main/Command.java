@@ -224,7 +224,8 @@ public class Command {
 	
 	/**
 	 * The command to either get the player's location or the location of a tile at specified coordinates
-	 * USAGE: "betterGetLocation [xCoordinateOfTileToGet] [yCoordinateOfTileToGet]"
+	 * USAGE: "getLocation [xCoordinateOfTileToGet] [yCoordinateOfTileToGet]"
+	 * If coordinates aren't given, the console will output the coordinates of the player
 	 */
 	public class betterGetLocation extends Command{
 		public betterGetLocation(){
@@ -245,6 +246,8 @@ public class Command {
 	
 	/**
 	 * The command to either set the player's location or to set the location of another tile
+	 * USAGE: "setLocation [xCoordinate] [yCoordinate] [tile]"
+	 * If tile isn't given, it just teleports the player
 	 */
 	public class betterSetLocation extends Command{
 		public betterSetLocation(){
