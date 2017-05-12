@@ -3,6 +3,7 @@
  */
 package main;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -10,6 +11,7 @@ import javax.swing.JTextField;
 
 import character.Player;
 import character.Race;
+import display.MainDisplay;
 import display.MainPane.MainPaneMode;
 import display.OptionPane.OptionsPaneOptions;
 import display.PlayerPane.PlayerStat;
@@ -20,7 +22,7 @@ import world.Maze;
  * This class is the entry class of the program
  * It is all stored in an object so that it can be serialized if needed
  */
-public class Main {
+public class Main implements Serializable{
 	
 	/**
 	 * The main object is static so that it can be accessed from other classes
@@ -31,7 +33,8 @@ public class Main {
 	 * This is all the main object's instance data
 	 * This is where all of the core components of the game are kept
 	 */
-	public display.MainDisplay gui;
+	public String gameIdentifier;
+	public transient MainDisplay gui;
 	public boolean willInterpretIncoming = true;
 	public String uninterpretedText = null;
 	public Player mainPlayer = null;
@@ -45,7 +48,10 @@ public class Main {
 	 * @throws InterruptedException
 	 * @throws InvocationTargetException 
 	 */
-	public Main() throws InterruptedException, InvocationTargetException {
+	public Main(String identifier) throws InterruptedException, InvocationTargetException {
+		//Sets the game's identifier so that text is written to the correct location and game saves can be diferentiated
+		this.gameIdentifier = identifier;
+		
 		//This part initializes the GUI and passes itself over to it so it can send this object data
 		this.gui = new display.MainDisplay(this);
 		
@@ -82,7 +88,7 @@ public class Main {
 		//TODO implement saves and then set main to a selected save
 		//Do saves with serialization
 		//And have a preliminary splash screen to allow them to make a new game/select a save
-		main = new Main();
+		main = new Main("test");
 		
 		//Changes the mainpane to the maze
 		while(main.world == null){

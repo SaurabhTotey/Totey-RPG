@@ -3,11 +3,13 @@
  */
 package character;
 
+import java.io.Serializable;
+
 /**
  * @author Saurabh Totey
  * A class of all characters (players, enemies, bosses, etc) with all their common attributes
  */
-public class Character {	
+public class Character implements Serializable{	
 	
 	/**
 	 * These are all of the common characteristics and attributes of characters

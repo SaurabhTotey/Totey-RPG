@@ -3,6 +3,7 @@
  */
 package character;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
@@ -10,7 +11,7 @@ import java.util.HashMap;
  * A class to define a set of specific objects that are attributes for all characters
  * the specific race objects are static and are human, robot, shadow, turtle, and bird
  */
-public class Race {
+public class Race implements Serializable{
 	
 	/**
 	 * This enumeration type is just a list of all racenames

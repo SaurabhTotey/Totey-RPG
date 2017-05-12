@@ -3,12 +3,14 @@
  */
 package world;
 
+import java.io.Serializable;
+
 /**
  * @author Saurabh Totey
  * The building blocks of a maze
  * The maze is built out of a collection of these chunks
  */
-public class Chunk {
+public class Chunk implements Serializable{
 	
 	/**
 	 * These are common properties of all of the chunks

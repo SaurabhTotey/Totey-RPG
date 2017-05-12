@@ -3,12 +3,14 @@
  */
 package character;
 
+import java.io.Serializable;
+
 /**
  * @author Saurabh Totey
  * These affinities are all the possible affinities a character has
  * These affect the strength of certain spells and actions
  */
-public class Affinity{
+public class Affinity implements Serializable{
 	
 	/**
 	 * The possible names for affinities

@@ -11,6 +11,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -24,6 +27,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.swing.filechooser.FileSystemView;
 
 import display.MainPane.MainPaneMode;
 import main.Main;
@@ -199,7 +203,21 @@ public class MainDisplay {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
+				//Writes text to logpane
 				logArea.append(text);
+				//Writes text to file
+				try{
+					File file = new File(FileSystemView.getFileSystemView().getDefaultDirectory().getPath() + "\\My Games\\ToteyRPG\\Logs\\" + mainGame.gameIdentifier + ".txt");
+					if(!file.exists()){
+						file.getParentFile().mkdirs();
+						file.createNewFile();
+					}
+					BufferedWriter bufferWriter = new BufferedWriter(new FileWriter(file, true));
+					bufferWriter.write(text);
+					bufferWriter.close();
+				}catch(IOException e){
+					logArea.append(e.getMessage());
+				}
 			}
 		});
 	}

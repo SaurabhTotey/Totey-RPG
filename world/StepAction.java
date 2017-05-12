@@ -106,7 +106,7 @@ public class StepAction{
 		}
 		@Override
 		public void performAction(int xCoordinate, int yCoordinate){
-			if(this.lastPlayerLocation != null && this.lastPlayerLocation[0] != xCoordinate && this.lastPlayerLocation[1] != yCoordinate){
+			if(this.lastPlayerLocation != null && (this.lastPlayerLocation[0] != xCoordinate || this.lastPlayerLocation[1] != yCoordinate)){
 				Main.main.world.movePlayerTo(this.lastPlayerLocation);
 			}
 			this.lastPlayerLocation = new int[]{xCoordinate, yCoordinate};
