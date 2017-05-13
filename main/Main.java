@@ -3,7 +3,9 @@
  */
 package main;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -100,6 +102,14 @@ public class Main implements Serializable{
 	        objectIn.close();
 	        fileIn.close();
 	        main.gui = new MainDisplay(main);
+	        BufferedReader bufferedReader = new BufferedReader(new FileReader(FileSystemView.getFileSystemView().getDefaultDirectory().getPath() + "\\My Games\\ToteyRPG\\Logs\\" + id + ".txt"));
+	        String totalLogText = "";
+	        String currentLine;
+	        while((currentLine = bufferedReader.readLine()) != null){
+	        	totalLogText += currentLine + "\n";
+	        }
+	        bufferedReader.close();
+	        main.gui.logArea.setText(totalLogText);
 		}catch(Exception e){
 			main = new Main(id);
 		}

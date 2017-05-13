@@ -98,7 +98,6 @@ public class Maze extends HashMap<String, Chunk>{
 			this.generateChunk(0, 0);
 		}
 		this.get(0, 0).terrain[Chunk.chunkLength / 2][Chunk.chunkLength / 2] = Tile.PORTAL.representation;
-		StepAction.initAllStepActions();
 		this.movePlayerTo(new int[]{Chunk.chunkLength / 2, Chunk.chunkLength / 2});
 	}
 	
@@ -251,6 +250,7 @@ public class Maze extends HashMap<String, Chunk>{
 	 * @param absoluteCoordinates where to move the player
 	 */
 	public synchronized void movePlayerTo(int[] absoluteCoordinates){
+		StepAction.initAllStepActions();
 		String steppedOn = getStrAt(absoluteCoordinates);
 		if(tileNameToTile.get(steppedOn).isTraversable){
 			this.get(this.playerLocation[0], this.playerLocation[1]).terrain[this.playerLocation[2]][this.playerLocation[3]] = (lastSteppedOn.getsReplacedWhenSteppedOn)? Tile.EMPTY.representation : lastSteppedOn.representation;
