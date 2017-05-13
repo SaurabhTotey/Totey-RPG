@@ -171,7 +171,7 @@ public class OptionPane extends JPanel {
 							button.addActionListener(new ActionListener(){
 								@Override
 								public void actionPerformed(ActionEvent e){
-									mainGame.interpretText(((JButton) e.getSource()).getText());
+									Main.interpretText(((JButton) e.getSource()).getText());
 								}
 							});
 							button.setFont(defaultFont);

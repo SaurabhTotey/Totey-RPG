@@ -104,7 +104,7 @@ public class MainDisplay {
 				inputField.addActionListener(new ActionListener(){
 					@Override
 				    public void actionPerformed(ActionEvent e){
-						mainGame.interpretText(inputField.getText());
+						Main.interpretText(inputField.getText());
 						lastEntered.add(inputField.getText());
 						inputField.setText("");
 						userLocation = lastEntered.size();

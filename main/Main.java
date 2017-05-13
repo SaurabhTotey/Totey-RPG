@@ -3,11 +3,15 @@
  */
 package main;
 
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileSystemView;
 
 import character.Player;
 import character.Race;
@@ -15,6 +19,7 @@ import display.MainDisplay;
 import display.MainPane.MainPaneMode;
 import display.OptionPane.OptionsPaneOptions;
 import display.PlayerPane.PlayerStat;
+import display.SelectWorldDisplay;
 import world.Maze;
 
 /**
@@ -35,8 +40,8 @@ public class Main implements Serializable{
 	 */
 	public String gameIdentifier;
 	public transient MainDisplay gui;
-	public boolean willInterpretIncoming = true;
-	public String uninterpretedText = null;
+	public static boolean willInterpretIncoming = true;
+	public static String uninterpretedText = null;
 	public Player mainPlayer = null;
 	public boolean testingMode = true;
 	public Maze world;
@@ -62,15 +67,15 @@ public class Main implements Serializable{
 		//Collects user name and first race
 		log("You wake up in a vast dank cave. Your head hurts, your vision is blurry, and you don't remember much. You try to remember your name. You think it might be...");
 		String name;
-		name = this.waitForInput(false);
+		name = waitForInput(false);
 		((JTextField) this.gui.userPane.playerInfoPanes.get(PlayerStat.PLAYER_NAME)[1]).setText(name);
 		log("Yes, you remember that your name is \"" + name + "\". Now that you figured that out, you look down at yourself, and are surprised to see that you are a...");
 		this.gui.optionsPane.setOptionsPane(OptionsPaneOptions.RACES);
-		String race = this.waitForInput(false);
+		String race = waitForInput(false);
 		boolean isValidRace = race.equals("Human") || race.equals("Robot") || race.equals("Shadow") || race.equals("Turtle") || race.equals("Bird");
 		while(!isValidRace){
 			log("You remembered that you were being silly, and that \"" + race + "\" wasn't how \"Human\", \"Robot\", \"Shadow\", \"Turtle\", or \"Bird\" were spelled.");
-			race = this.waitForInput(false);
+			race = waitForInput(false);
 			isValidRace = race.equals("Human") || race.equals("Robot") || race.equals("Shadow") || race.equals("Turtle") || race.equals("Bird");
 		}
 		log("Of course! You remembered that you resembled your " + race.substring(0, 1).toLowerCase() + race.substring(1) + " parent mostly. You, however, could not remember the race of your other parent.");
@@ -85,12 +90,21 @@ public class Main implements Serializable{
 	 * @throws InvocationTargetException 
 	 */
 	public static void main(String[] args) throws InterruptedException, InvocationTargetException{
-		//TODO implement saves and then set main to a selected save
-		//Do saves with serialization
-		//And have a preliminary splash screen to allow them to make a new game/select a save
-		main = new Main("test");
+		//Gets the user's desired save from the display frame and tries deserializing it; if that fails, it makes a new game (eg. the specified game doesn't exist)
+		new SelectWorldDisplay();
+		String id = waitForInput(false);
+		try{
+			FileInputStream fileIn = new FileInputStream(FileSystemView.getFileSystemView().getDefaultDirectory().getPath() + "\\My Games\\ToteyRPG\\Saves\\" + id + ".save");
+	        ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+	        main = (Main) objectIn.readObject();
+	        objectIn.close();
+	        fileIn.close();
+	        main.gui = new MainDisplay(main);
+		}catch(Exception e){
+			main = new Main(id);
+		}
 		
-		//Changes the mainpane to the maze
+		//Waits for the maze to finish generating
 		while(main.world == null){
 			Thread.sleep(200);
 			//TODO remove below, but make it unecessary first
@@ -113,14 +127,14 @@ public class Main implements Serializable{
 	 * @return gives back the string of what the main thread was waiting for
 	 * @throws InterruptedException
 	 */
-	public String waitForInput(boolean willAllowEmptyInput) throws InterruptedException{
-		this.willInterpretIncoming = false;
-		while(this.uninterpretedText == null || !willAllowEmptyInput && this.uninterpretedText.isEmpty()){
+	public static String waitForInput(boolean willAllowEmptyInput) throws InterruptedException{
+		willInterpretIncoming = false;
+		while(uninterpretedText == null || !willAllowEmptyInput && uninterpretedText.isEmpty()){
 			Thread.sleep(15);
 		}
-		String toReturn = this.uninterpretedText;
-		this.uninterpretedText = null;
-		this.willInterpretIncoming = true;
+		String toReturn = uninterpretedText;
+		uninterpretedText = null;
+		willInterpretIncoming = true;
 		return toReturn;
 	}
 	
@@ -130,16 +144,16 @@ public class Main implements Serializable{
 	 * Mostly used for testing, but it is used for getting text input during certain parts of story (if you want to do this, use the waitForInput() function, as it correctly calls on this function)
 	 * @param incoming the text to either save or interpret
 	 */
-	public void interpretText(String incoming){
+	public static void interpretText(String incoming){
 		System.out.println("[" + new SimpleDateFormat("dd/MM/yy HH:mm:ss").format(Calendar.getInstance().getTime()) + "] <<< " + incoming);
-		if(this.willInterpretIncoming){
+		if(willInterpretIncoming){
 			if(Command.doCommand(incoming)){
 				log("The command was successful!");
 			}else{
 				log("Sorry, the command \'" + incoming +  "\' wasn't understood. Maybe try the 'help' command...");
 			}
 		}else{
-			this.uninterpretedText = incoming;
+			uninterpretedText = incoming;
 		}
 	}
 	
