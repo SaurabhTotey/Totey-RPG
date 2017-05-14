@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -97,8 +98,15 @@ public class PlayerPane extends JPanel {
 			}
 			((JTextField) playerInfoPanes.get(playerStatistic)[1]).setFocusable(false);
 		}
+		
+		this.playerInfoPanes.get(PlayerStat.PLAYER_EXPERIENCE)[1] = new JProgressBar(SwingConstants.HORIZONTAL);
+		((JProgressBar) this.playerInfoPanes.get(PlayerStat.PLAYER_EXPERIENCE)[1]).setFont(defaultFont);
+		((JProgressBar) playerInfoPanes.get(PlayerStat.PLAYER_EXPERIENCE)[1]).setStringPainted(true);
+		((JProgressBar) playerInfoPanes.get(PlayerStat.PLAYER_EXPERIENCE)[1]).setString("???");
 		this.add(playerInfoPanes.get(PlayerStat.PLAYER_NAME)[0], "gapleft 5%");
 		this.add(playerInfoPanes.get(PlayerStat.PLAYER_NAME)[1], "growx, pushx, span, wrap, gapright 5%");
+		this.add(playerInfoPanes.get(PlayerStat.PLAYER_EXPERIENCE)[0], "gapleft 5%");
+		this.add(playerInfoPanes.get(PlayerStat.PLAYER_EXPERIENCE)[1], "growx, pushx, span, wrap, gapright 5%");
 		this.add(playerInfoPanes.get(PlayerStat.PLAYER_RACES)[0], "gapleft 5%");
 		this.add(playerInfoPanes.get(PlayerStat.PLAYER_RACES)[1], "growx, pushx, span, wrap, gapright 5%");
 		this.add(playerInfoPanes.get(PlayerStat.PLAYER_HEALTH)[0], "gapleft 5%");
@@ -120,12 +128,16 @@ public class PlayerPane extends JPanel {
 			public void run() {
 				try{
 					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_NAME))[1]).setText(mainGame.mainPlayer.name);
+					((JProgressBar) playerInfoPanes.get(PlayerStat.PLAYER_EXPERIENCE)[1]).setMinimum(mainGame.mainPlayer.getTotalExpForLevel(mainGame.mainPlayer.getLevel(0)));
+					((JProgressBar) playerInfoPanes.get(PlayerStat.PLAYER_EXPERIENCE)[1]).setMaximum(mainGame.mainPlayer.getTotalExpForLevel(mainGame.mainPlayer.getLevel(0) + 1));
+					((JProgressBar) playerInfoPanes.get(PlayerStat.PLAYER_EXPERIENCE)[1]).setValue(mainGame.mainPlayer.experience);
+					((JProgressBar) playerInfoPanes.get(PlayerStat.PLAYER_EXPERIENCE)[1]).setString("Level " + mainGame.mainPlayer.getLevel(0));
 					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_RACES))[1]).setText(mainGame.mainPlayer.races[0].stringName + " / " + ((mainGame.mainPlayer.races[1] != null)? mainGame.mainPlayer.races[1].stringName : "???"));
-					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_HEALTH))[1]).setText(mainGame.mainPlayer.getHealth()[0] + " / " + mainGame.mainPlayer.getHealth()[1]);
-					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_ATTACK))[1]).setText(mainGame.mainPlayer.getAttack()[0] + " / " + mainGame.mainPlayer.getAttack()[1]);
-					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_DEFENSE))[1]).setText(mainGame.mainPlayer.getDefense()[0] + " / " + mainGame.mainPlayer.getDefense()[1]);
-					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_SPEED))[1]).setText(mainGame.mainPlayer.getSpeed()[0] + " / " + mainGame.mainPlayer.getSpeed()[1]);
-				}catch(Exception e){
+					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_HEALTH))[1]).setText(mainGame.mainPlayer.health[0] + " / " + mainGame.mainPlayer.health[1]);
+					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_ATTACK))[1]).setText(mainGame.mainPlayer.attack[0] + " / " + mainGame.mainPlayer.attack[1]);
+					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_DEFENSE))[1]).setText(mainGame.mainPlayer.defense[0] + " / " + mainGame.mainPlayer.defense[1]);
+					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_SPEED))[1]).setText(mainGame.mainPlayer.speed[0] + " / " + mainGame.mainPlayer.speed[1]);
+				}catch(NullPointerException e){
 					
 				}
 			}

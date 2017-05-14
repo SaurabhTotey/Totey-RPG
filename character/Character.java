@@ -4,6 +4,7 @@
 package character;
 
 import java.io.Serializable;
+import java.util.function.Function;
 
 /**
  * @author Saurabh Totey
@@ -18,11 +19,11 @@ public class Character implements Serializable{
 	 */
 	public Race[] races = new Race[2];
 	public String name = "";
-	private int experience = 0;
-	private int[] health = new int[2];
-	private int[] attack = new int[2];
-	private int[] defense = new int[2];
-	private int[] speed = new int[2];
+	public int experience = 0;
+	public int[] health = new int[2];
+	public int[] attack = new int[2];
+	public int[] defense = new int[2];
+	public int[] speed = new int[2];
 	public Affinity[] affinities = Affinity.makeAffinities();
 	public Item armor;
 	public Item pet;
@@ -92,13 +93,22 @@ public class Character implements Serializable{
 	 * @return the level of the character after experience gain
 	 */
 	public int getLevel(int experienceGained){
-		int level = (int) (2 * Math.sqrt(this.experience)) + 1;
+		Function<Integer, Integer> expToLevel = (Integer exp) -> (int) ((2 * Math.sqrt(exp) + 1) / 4);
+		int level = expToLevel.apply(this.experience);
 		this.experience += experienceGained;
-		for(int i = level; i < (int) (2 * Math.sqrt(this.experience)) + 1; i++){
+		for(int i = level; i < expToLevel.apply(this.experience); i++){
 			this.gainLevelUpStats();
 			this.restoreStats();
 		}
-		return (int) (2 * Math.sqrt(this.experience)) + 1;
+		return expToLevel.apply(this.experience);
+	}
+	
+	/**
+	 * Gets the amount of exp needed to level up
+	 * @return the amount of exp needed to level up
+	 */
+	public int getTotalExpForLevel(int level){
+		return (int) Math.pow(4 * level - 1, 2) / 4;
 	}
 	
 	/**
@@ -130,38 +140,6 @@ public class Character implements Serializable{
 			this.health[0] = (this.health[0] + ((int) (this.health[1] / 10)) > health[1])? this.health[1] : (int) (this.health[1] / 10);
 			this.potions--;
 		}
-	}
-	
-	/**
-	 * Getter method for character health
-	 * @return the user's current health / max health
-	 */
-	public int[] getHealth(){
-		return this.health;
-	}
-	
-	/**
-	 * Getter method for character attack
-	 * @return the user's current attack / max attack
-	 */
-	public int[] getAttack(){
-		return this.attack;
-	}
-	
-	/**
-	 * Getter method for character defense
-	 * @return the user's current defense / max defense
-	 */
-	public int[] getDefense(){
-		return this.defense;
-	}
-	
-	/**
-	 * Getter method for character speed
-	 * @return the user's current speed / max speed
-	 */
-	public int[] getSpeed(){
-		return this.speed;
 	}
 
 }

@@ -51,7 +51,7 @@ public class Main implements Serializable{
 	/**
 	 * The main object
 	 * this holds the entire game in one object
-	 * this can be serialized and saved to later be resumed 
+	 * this can be serialized and saved to later be resumed
 	 * @throws InterruptedException
 	 * @throws InvocationTargetException 
 	 */
@@ -83,6 +83,7 @@ public class Main implements Serializable{
 		log("Of course! You remembered that you resembled your " + race.substring(0, 1).toLowerCase() + race.substring(1) + " parent mostly. You, however, could not remember the race of your other parent.");
 		this.gui.optionsPane.setOptionsPane(OptionsPaneOptions.DEFAULT);
 		mainPlayer = new Player(name, Race.stringToRace.get(race));
+		//TODO put tutorial fight to get player to level 1
 	}
 
 	/**
