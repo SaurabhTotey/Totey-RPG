@@ -8,10 +8,6 @@ import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JButton;
@@ -25,7 +21,6 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.filechooser.FileSystemView;
 import javax.swing.text.DefaultFormatter;
 
 import main.Main;
@@ -141,26 +136,12 @@ public class OptionPane extends JPanel {
 						add(widthSpinner, "width 90%, align center, wrap");
 						add(titleForHeightSpinner, "width 90%, align center, wrap");
 						add(heightSpinner, "width 90%, align center, wrap");
-						JButton saveButton = new JButton("Save game");
+						JButton saveButton = new JButton("Save & Quit");
 						saveButton.setFont(defaultFont);
 						saveButton.addActionListener(new ActionListener(){
 							@Override
 							public void actionPerformed(ActionEvent e) {
-								Main.log("Saving game!");
-								try{
-									File whereToSave = new File(FileSystemView.getFileSystemView().getDefaultDirectory().getPath() + "\\My Games\\ToteyRPG\\Saves\\" + mainGame.gameIdentifier + ".save");
-									if(!whereToSave.exists()){
-										whereToSave.getParentFile().mkdirs();
-									}
-									FileOutputStream fileOut = new FileOutputStream(whereToSave.getPath());
-									ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
-									objectOut.writeObject(mainGame);
-									Main.log("Game has been saved!");
-									objectOut.close();
-									fileOut.close();
-								}catch(IOException er){
-									er.printStackTrace();
-								}
+								Main.main.gui.quitProcedure.run();
 							}
 						});
 						add(saveButton, "width 90%, align center, wrap");

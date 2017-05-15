@@ -11,10 +11,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
@@ -52,6 +56,25 @@ public class MainDisplay {
 	public Font titleFont;
 	public Font defaultFont;
 	public Main mainGame;
+	public Runnable quitProcedure = () -> 
+	{
+		Main.log("Saving game!");
+		try{
+			File whereToSave = new File(FileSystemView.getFileSystemView().getDefaultDirectory().getPath() + "\\My Games\\ToteyRPG\\Saves\\" + mainGame.gameIdentifier + ".save");
+			if(!whereToSave.exists()){
+				whereToSave.getParentFile().mkdirs();
+			}
+			FileOutputStream fileOut = new FileOutputStream(whereToSave.getPath());
+			ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+			objectOut.writeObject(mainGame);
+			Main.log("Game has been saved!");
+			objectOut.close();
+			fileOut.close();
+		}catch(IOException er){
+			er.printStackTrace();
+		}
+		System.exit(0);
+	};
 	
 	/**
 	 * These variables keep track of indexes of user inputs
@@ -152,6 +175,25 @@ public class MainDisplay {
 				// This part shows the frame and sets the focus to the inputfield
 				frame.setVisible(true);
 				inputField.requestFocus();
+				
+				frame.addWindowListener(new WindowListener(){
+					@Override
+					public void windowOpened(WindowEvent e) {}
+					@Override
+					public void windowClosing(WindowEvent e) {
+						quitProcedure.run();
+					}
+					@Override
+					public void windowClosed(WindowEvent e) {}
+					@Override
+					public void windowIconified(WindowEvent e) {}
+					@Override
+					public void windowDeiconified(WindowEvent e){}
+					@Override
+					public void windowActivated(WindowEvent e) {}
+					@Override
+					public void windowDeactivated(WindowEvent e) {}
+				});
 				
 				//Makes a new thread to continuously update the GUI
 				new Thread(new Runnable(){
