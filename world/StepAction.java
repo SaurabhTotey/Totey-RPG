@@ -3,8 +3,10 @@
  */
 package world;
 
+import java.awt.Point;
 import java.util.HashMap;
 
+import display.OptionPane.OptionsPaneOptions;
 import main.Main;
 import world.Maze.Tile;
 
@@ -25,18 +27,24 @@ public class StepAction{
 	 * A constructor for an action which, given a tile, will put itself in the hashmap of tiles to actions
 	 */
 	public StepAction(String tile) {
-		tileActions.put(tile, this);
+		tileActions.putIfAbsent(tile, this);
 	}
 	
 	/**
 	 * What the actual action is based on the given x and y coordinates of where to perform the action
 	 * Most actions should scale from the distance from the center
-	 * If not overwritten, performAction will do nothing
+	 * If not overwritten, performAction will just set the pain mode to the default pane
 	 * @param xCoordinate the x coordinate of where the action should occur
 	 * @param yCoordinate the y coordinate of where the action should occur
+	 * @throws InterruptedException 
 	 */
-	public void performAction(int xCoordinate, int yCoordinate){
-		//This one will do nothing
+	public void performAction(int xCoordinate, int yCoordinate) throws InterruptedException{
+		try{
+			Main.main.gui.optionsPane.setOptionsPane(OptionsPaneOptions.DEFAULT);
+			Main.willInterpretIncoming = true;
+		}catch(Exception e){
+			
+		}
 	}
 	
 	/**
@@ -48,7 +56,8 @@ public class StepAction{
 			super(Tile.ENEMY.representation);
 		}
 		@Override
-		public void performAction(int xCoordinate, int yCoordinate){
+		public void performAction(int xCoordinate, int yCoordinate) throws InterruptedException{
+			super.performAction(xCoordinate, yCoordinate);
 			//TODO start battle with enemy
 		}
 	}
@@ -62,7 +71,8 @@ public class StepAction{
 			super(Tile.WALL.representation);
 		}
 		@Override
-		public void performAction(int xCoordinate, int yCoordinate){
+		public void performAction(int xCoordinate, int yCoordinate) throws InterruptedException{
+			super.performAction(xCoordinate, yCoordinate);
 			//TODO decrement player's health
 		}
 	}
@@ -76,7 +86,8 @@ public class StepAction{
 			super(Tile.ITEM.representation);
 		}
 		@Override
-		public void performAction(int xCoordinate, int yCoordinate){
+		public void performAction(int xCoordinate, int yCoordinate) throws InterruptedException{
+			super.performAction(xCoordinate, yCoordinate);
 			//TODO give the player an item
 		}
 	}
@@ -90,26 +101,57 @@ public class StepAction{
 			super(Tile.BOSS.representation);
 		}
 		@Override
-		public void performAction(int xCoordinate, int yCoordinate){
+		public void performAction(int xCoordinate, int yCoordinate) throws InterruptedException{
+			super.performAction(xCoordinate, yCoordinate);
 			//TODO start boss fight
 		}
 	}
 	
 	/**
 	 * The set of actions for what should happen if the player walks on a portal tile
-	 * Will teleport the player to the last portal they have been to, or if they haven't been to a portal, registers this portal as the latest
+	 * Will show players all of their visited teleporters and allow them to travel to them
 	 */
 	public class teleportWithPortal extends StepAction{
 		private int[] lastPlayerLocation = null;
 		public teleportWithPortal(){
-			super(Tile.PORTAL.representation);
+			 super(Tile.PORTAL.representation);
 		}
 		@Override
-		public void performAction(int xCoordinate, int yCoordinate){
-			if(this.lastPlayerLocation != null && (this.lastPlayerLocation[0] != xCoordinate || this.lastPlayerLocation[1] != yCoordinate)){
-				Main.main.world.movePlayerTo(this.lastPlayerLocation);
-			}
-			this.lastPlayerLocation = new int[]{xCoordinate, yCoordinate};
+		public void performAction(int xCoordinate, int yCoordinate) throws InterruptedException{
+			super.performAction(xCoordinate, yCoordinate);
+			new Thread(new Runnable(){
+				@Override
+				public void run(){
+					if(Main.main == null || Main.main.world == null){
+						return;
+					}
+					Point portalLocation = new Point(xCoordinate, yCoordinate);
+					if(!Main.main.world.discoveredPortals.contains(portalLocation)){
+						Main.main.world.discoveredPortals.add(portalLocation);
+					}
+					Main.log("To which coordinates will you teleport to?");
+					Main.main.gui.optionsPane.setOptionsPane(OptionsPaneOptions.TELEPORT_OPTIONS);
+					String desiredLocationToGo;
+					try {
+						desiredLocationToGo = Main.waitForInput(true);
+					} catch (InterruptedException e1) {
+						desiredLocationToGo = "Cancel";
+					}
+					try{
+						String[] coords = desiredLocationToGo.substring(1, desiredLocationToGo.length() - 1).split(", ");
+						Point toTeleportTo = new Point(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]));
+						if(Main.main.world.discoveredPortals.contains(toTeleportTo)){
+							Main.main.world.movePlayerTo(new int[]{(int) toTeleportTo.getX(), (int) toTeleportTo.getY()});
+							Main.log("You teleported to the teleporter at (" + (int) toTeleportTo.getX() + ", " + (int) toTeleportTo.getY() + ")");
+						}else{
+							throw new Exception();
+						}
+					}catch(Exception e){
+						Main.log("You decided not to teleport");
+					}
+					Main.main.gui.optionsPane.setOptionsPane(OptionsPaneOptions.DEFAULT);
+				}
+			}).start();
 		}
 	}
 	
@@ -122,7 +164,8 @@ public class StepAction{
 			super(Tile.VILLAGER.representation);
 		}
 		@Override
-		public void performAction(int xCoordinate, int yCoordinate){
+		public void performAction(int xCoordinate, int yCoordinate) throws InterruptedException{
+			super.performAction(xCoordinate, yCoordinate);
 			//TODO set up dialogue with villager
 		}
 	}

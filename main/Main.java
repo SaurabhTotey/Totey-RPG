@@ -63,7 +63,13 @@ public class Main implements Serializable{
 		this.gui = new display.MainDisplay(this);
 		
 		//Makes a new thread to start making the maze
-		new Thread(() -> world = new Maze()).start();
+		new Thread(() -> {
+			try {
+				world = new Maze();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}).start();
 		
 		//This is where the game actually starts
 		//Collects user name and first race
@@ -135,6 +141,8 @@ public class Main implements Serializable{
 	
 	/**
 	 * Waits until GUI puts something in uninterpreted text and then returns it
+	 * If the waitForInput is to be interrupted, willInterpretIncoming needs to be set to true
+	 * That will force this method to return true
 	 * @return gives back the string of what the main thread was waiting for
 	 * @throws InterruptedException
 	 */
@@ -142,12 +150,20 @@ public class Main implements Serializable{
 		willInterpretIncoming = false;
 		while(uninterpretedText == null || !willAllowEmptyInput && uninterpretedText.isEmpty()){
 			Thread.sleep(15);
+			if(willInterpretIncoming){
+				return null;
+			}
 		}
 		String toReturn = uninterpretedText;
 		uninterpretedText = null;
 		willInterpretIncoming = true;
 		return toReturn;
 	}
+	
+	/**
+	 * Another waitForInput method that also takes in a thread
+	 * Is used for when the method should be running in another thread
+	 */
 	
 	/**
 	 * This function handles all incoming text by either saving it as instancedata or by attempting to interpret commands
@@ -161,7 +177,7 @@ public class Main implements Serializable{
 			if(Command.doCommand(incoming)){
 				log("The command was successful!");
 			}else{
-				log("Sorry, the command \'" + incoming +  "\' wasn't understood. Maybe try the 'help' command...");
+				log("Sorry, the command '" + incoming +  "' wasn't understood. Maybe try the 'help' command...");
 			}
 		}else{
 			uninterpretedText = incoming;

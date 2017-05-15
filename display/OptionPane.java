@@ -5,6 +5,7 @@ package display;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -185,7 +186,22 @@ public class OptionPane extends JPanel {
 						//TODO small stats gambling on optionspane
 						break;
 					case TELEPORT_OPTIONS:
-						//TODO display all visited portals
+						ActionListener sendContents = new ActionListener(){
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								Main.interpretText(((JButton) e.getSource()).getText());
+							}
+						};
+						for(Point portalCoords : mainGame.world.discoveredPortals){
+							JButton possibleLocation = new JButton("(" + (int) portalCoords.getX() + ", " + (int) portalCoords.getY() + ")");
+							possibleLocation.setFont(defaultFont);
+							possibleLocation.addActionListener(sendContents);
+							add(possibleLocation, "width 90%, align center, wrap");
+						}
+						JButton cancelButton = new JButton("Cancel");
+						cancelButton.setFont(defaultFont);
+						cancelButton.addActionListener(sendContents);
+						add(cancelButton, "width 90%, align center, wrap");
 						break;
 				}
 			}

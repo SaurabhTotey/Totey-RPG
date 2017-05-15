@@ -80,14 +80,16 @@ public class Maze extends HashMap<String, Chunk>{
 	 */
 	public int[] playerLocation = new int[4];
 	public Tile lastSteppedOn = Tile.EMPTY;
+	public ArrayList<Point> discoveredPortals = new ArrayList<Point>();
 	public static int displayWidth = 51;
 	public static int displayHeight = 23;
 	public static HashMap<String, Tile> tileNameToTile = new HashMap<String, Tile>();
 	
 	/**
 	 * Constructs the maze object for the player to explore
+	 * @throws InterruptedException 
 	 */
-	public Maze(){
+	public Maze() throws InterruptedException{
 		super();
 		for(int i = 0; i < Chunk.chunkLength / 5; i++){
 			for(int j = 0; j < Chunk.chunkLength / 5; j++){
@@ -99,6 +101,7 @@ public class Maze extends HashMap<String, Chunk>{
 		}
 		this.get(0, 0).terrain[Chunk.chunkLength / 2][Chunk.chunkLength / 2] = Tile.PORTAL.representation;
 		this.movePlayerTo(new int[]{Chunk.chunkLength / 2, Chunk.chunkLength / 2});
+		this.discoveredPortals.add(new Point(Chunk.chunkLength / 2, Chunk.chunkLength / 2));
 	}
 	
 	/**
@@ -237,8 +240,9 @@ public class Maze extends HashMap<String, Chunk>{
 	 * (eg if the player wants to move UP, instead the map will move DOWN, so it looks like the user went up)
 	 * Will generate new chunks if it needs to
 	 * @param direction where to move the player, or the opposite of which direction to move the map
+	 * @throws InterruptedException 
 	 */
-	public synchronized void move(Direction direction){
+	public synchronized void move(Direction direction) throws InterruptedException{
 		int[] playerCoords = chunkCoordinatesToAbsolute(this.playerLocation);
 		playerCoords[0] += direction.xModifier;
 		playerCoords[1] += direction.yModifier;
@@ -248,8 +252,9 @@ public class Maze extends HashMap<String, Chunk>{
 	/**
 	 * Sends the player to a specific location
 	 * @param absoluteCoordinates where to move the player
+	 * @throws InterruptedException 
 	 */
-	public synchronized void movePlayerTo(int[] absoluteCoordinates){
+	public synchronized void movePlayerTo(int[] absoluteCoordinates) throws InterruptedException{
 		StepAction.initAllStepActions();
 		String steppedOn = getStrAt(absoluteCoordinates);
 		if(tileNameToTile.get(steppedOn).isTraversable){

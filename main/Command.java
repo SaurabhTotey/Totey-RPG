@@ -60,8 +60,9 @@ public class Command {
 	 * This is a method that executes the class's command
 	 * It doesn't do anything except check that the first parameter of the command is the commandname
 	 * @param command an array of all of the parts of the command split by words
+	 * @throws InterruptedException 
 	 */
-	public void executeCommand(String[] command){
+	public void executeCommand(String[] command) throws InterruptedException{
 		if(!command[0].equals(this.commandName)){
 			throw new Error();
 		}
@@ -104,7 +105,7 @@ public class Command {
 			super("help", "Displays available commands");
 		}
 		@Override
-		public void executeCommand(String[] command){
+		public void executeCommand(String[] command) throws InterruptedException{
 			super.executeCommand(command);
 			int i = 0;
 			String output = "\n\nDisplaying All Available Commands\n\n";
@@ -131,7 +132,7 @@ public class Command {
 			super("refresh", "Sets your current stats to your maximum stats");
 		}
 		@Override
-		public void executeCommand(String[] command){
+		public void executeCommand(String[] command) throws InterruptedException{
 			super.executeCommand(command);
 			Main.main.mainPlayer.restoreStats();
 		}
@@ -146,7 +147,7 @@ public class Command {
 			super("gainExperience", "Gives you however much experience you want", "desired experience");
 		}
 		@Override
-		public void executeCommand(String[] command){
+		public void executeCommand(String[] command) throws InterruptedException{
 			super.executeCommand(command);
 			Main.main.mainPlayer.getLevel(Integer.parseInt(command[1]));
 		}
@@ -161,7 +162,7 @@ public class Command {
 			super("setRace", "Sets your race to whatever you want (if it is spelled right)", "race slot, desired race");
 		}
 		@Override
-		public void executeCommand(String[] command){
+		public void executeCommand(String[] command) throws InterruptedException{
 			super.executeCommand(command);
 			Main.main.mainPlayer.races[Integer.parseInt(command[1])] = Race.stringToRace.get(command[2]);
 		}
@@ -176,7 +177,7 @@ public class Command {
 			super("buffStats", "Gives you stats as if you had levelled up as many times as you command", "buff magnitude");
 		}
 		@Override
-		public void executeCommand(String[] command){
+		public void executeCommand(String[] command) throws InterruptedException{
 			super.executeCommand(command);
 			int runNum = 1;
 			try{
@@ -199,7 +200,7 @@ public class Command {
 			super("getLocation", "Gets the player's location");
 		}
 		@Override
-		public void executeCommand(String[] command){
+		public void executeCommand(String[] command) throws InterruptedException{
 			super.executeCommand(command);
 			int[] playerCoordinates = Maze.chunkCoordinatesToAbsolute(Main.main.world.playerLocation);
 			Main.log("Your location is (" + playerCoordinates[0] + ", " + playerCoordinates[1] + ")");
@@ -215,7 +216,7 @@ public class Command {
 			super("setLocation", "Moves the player to the specified location", "x coordinate, y coordinate");
 		}
 		@Override
-		public void executeCommand(String[] command){
+		public void executeCommand(String[] command) throws InterruptedException{
 			super.executeCommand(command);
 			int[] coordsToMove = {Integer.parseInt(command[1]), Integer.parseInt(command[2])};
 			Main.main.world.movePlayerTo(coordsToMove);
@@ -232,7 +233,7 @@ public class Command {
 			super("getLocation", "Gets the player's location if given no coordinates, or get the tile at the specified coordinates", "x coordinate, y coordinate");
 		}
 		@Override
-		public void executeCommand(String[] command){
+		public void executeCommand(String[] command) throws InterruptedException{
 			super.executeCommand(command);
 			if(command.length == 1){
 				new getLocation().executeCommand(command);
@@ -254,7 +255,7 @@ public class Command {
 			super("setLocation", "Either teleports the player to the given coordinates or sets the tile at the given coordinates", "x coordinate, y coordinate, tile");
 		}
 		@Override
-		public void executeCommand(String[] command){
+		public void executeCommand(String[] command) throws InterruptedException{
 			super.executeCommand(command);
 			if(command.length == 3){
 				new setLocation().executeCommand(command);

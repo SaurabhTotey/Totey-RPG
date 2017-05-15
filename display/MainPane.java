@@ -93,7 +93,11 @@ public class MainPane extends JPanel {
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			mainGame.world.move(direction);
+			try {
+				mainGame.world.move(direction);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
 		}
 		
 	}
