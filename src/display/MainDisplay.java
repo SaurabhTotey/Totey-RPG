@@ -24,6 +24,7 @@ import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -98,6 +99,12 @@ public class MainDisplay {
 			public void run(){
 				// This part makes the frame, sizes and centers it, and sets it's layout
 				frame = new JFrame("TOTEY RPG");
+				try {
+				    frame.setIconImage(ImageIO.read(new File("images/MainIcon.png")));
+				}
+				catch (IOException exc) {
+				    exc.printStackTrace();
+				}
 				frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 				GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
 				GraphicsDevice[] allDevices = env.getScreenDevices();
@@ -276,7 +283,7 @@ public class MainDisplay {
 				frame.revalidate();
 				if(mainPane.mode == MainPaneMode.MAZE){
 					try{
-						((JTextArea) mainPane.getComponents()[0]).setText(mainGame.world.toString());
+						((JTextArea) mainPane.getComponent(0)).setText(mainGame.world.toString());
 					}catch(Exception e){
 						
 					}

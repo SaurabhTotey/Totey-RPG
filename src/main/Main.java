@@ -52,6 +52,7 @@ public class Main implements Serializable{
 	 * The main object
 	 * this holds the entire game in one object
 	 * this can be serialized and saved to later be resumed
+	 * TODO fix that when the user closes before construction, they don't get a name
 	 * @throws InterruptedException
 	 * @throws InvocationTargetException 
 	 */

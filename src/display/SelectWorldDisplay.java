@@ -8,8 +8,11 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -25,8 +28,6 @@ import net.miginfocom.swing.MigLayout;
  * The jFrame that selects whether to make a new world or to select an old world
  */
 public class SelectWorldDisplay {
-	
-	private boolean hasSubmittedText;
 
 	/**
 	 * Makes a jframe that asks the user to select which world they want
@@ -38,6 +39,12 @@ public class SelectWorldDisplay {
 			public void run() {
 				//This part makes the frame, sizes and centers it, and sets it's layout
 				JFrame frame = new JFrame("TOTEY RPG");
+				try {
+				    frame.setIconImage(ImageIO.read(new File("images/MainIcon.png")));
+				}
+				catch (IOException exc) {
+				    exc.printStackTrace();
+				}
 				frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 				GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
 				GraphicsDevice[] allDevices = env.getScreenDevices();
