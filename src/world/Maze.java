@@ -202,7 +202,7 @@ public class Maze extends HashMap<String, Chunk>{
 	 * Makes an empty tile that is usually an emptytile, but could also be an item tile or an enemy tile
 	 * @return the empty tile that is almost anything except a boss or wall tile
 	 */
-	public String getEmptyTile(){
+	public static String getEmptyTile(){
 		int randSelection = (int) (Math.random() * 50001);
 		if(randSelection <= 2500){
 			return Tile.ENEMY.representation; // 1/20 chance

@@ -3,8 +3,12 @@
  */
 package character;
 
+import java.util.HashMap;
+import java.util.function.Function;
 import display.OptionPane.OptionsPaneOptions;
 import main.Main;
+import world.Maze;
+import world.Maze.Direction;
 
 /**
  * @author Saurabh Totey
@@ -13,7 +17,9 @@ import main.Main;
 public class Player extends Character {
 
 	public int bombs;
-	public boolean areStatsVisible = true;
+	public int tpPotions;
+	public int potions;
+	public HashMap<String, Function<Boolean, Integer>> stringToItem = new HashMap<String, Function<Boolean, Integer>>();
 	
 	/**
 	 * This is the constructor for a player
@@ -23,18 +29,43 @@ public class Player extends Character {
 	 */
 	public Player(String name, Race initialRace) {
 		super(name, initialRace, 1);
-	}
-	
-	
-	/**
-	 * TODO THIS METHOD IS INCOMPLETE
-	 * Using a bomb decrements how many bombs the user has, and it destroys part of the maze
-	 */
-	public void useBomb(){
-		if(this.bombs > 0){
-			//TODO destroy surroundings in maze
-			this.bombs--;
-		}
+		stringToItem.put("bomb", (Boolean add) -> {
+			if(add){
+				bombs++;
+				return bombs;
+			}else if(bombs <= 0){
+				return bombs;
+			}
+			for(Direction direction : Direction.values()){
+				int[] chunkCoords = Maze.absoluteToChunkCoordinates(new int[]{Maze.chunkCoordinatesToAbsolute(Main.main.world.playerLocation)[0] + direction.xModifier, Maze.chunkCoordinatesToAbsolute(Main.main.world.playerLocation)[1] + direction.yModifier});
+				Main.main.world.get(chunkCoords[0], chunkCoords[1]).terrain[chunkCoords[2]][chunkCoords[3]] = Maze.getEmptyTile();
+			}
+			bombs--;
+			return bombs;
+		});
+		stringToItem.put("tppotion", (Boolean add) -> {
+			if(add){
+				tpPotions++;
+				return tpPotions;
+			}else if(tpPotions <= 0){
+				return tpPotions;
+			}
+			Main.main.gui.optionsPane.setOptionsPane(OptionsPaneOptions.TELEPORT_OPTIONS);
+			Main.main.gui.optionsPane.canSwitchMode = false;
+			tpPotions--;
+			return tpPotions;
+		});
+		stringToItem.put("potion", (Boolean add) -> {
+			if(add){
+				potions++;
+				return potions;
+			}else if(potions <= 0){
+				return potions;
+			}
+			health[0] = (health[0] + health[1] / 5 > health[1])? health[1] : health[0] + health[1] / 5;
+			potions--;
+			return potions;
+		});
 	}
 	
 	/**
@@ -52,6 +83,7 @@ public class Player extends Character {
 			for(int i = levelBefore; i < levelAfter; i++){
 				Main.main.gui.optionsPane.setOptionsPane(OptionsPaneOptions.STATS_GAMBLE);
 				try {
+					Thread.sleep(50);
 					while(Main.main.gui.optionsPane.canSwitchMode == false){
 						Thread.sleep(20);
 					}

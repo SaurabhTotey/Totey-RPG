@@ -143,6 +143,18 @@ public class OptionPane extends JPanel {
 							add(widthSpinner, "width 90%, align center, wrap");
 							add(titleForHeightSpinner, "width 90%, align center, wrap");
 							add(heightSpinner, "width 90%, align center, wrap");
+							JButton[] useItemButtons = new JButton[]{new JButton("Use Bomb"), new JButton("Use Potion"), new JButton("Use TPPotion")};
+							ActionListener useItemAction = new ActionListener(){
+								@Override
+								public void actionPerformed(ActionEvent e){
+									Main.interpretText(((JButton) e.getSource()).getText().toLowerCase()); 
+								}
+							};
+							for(int i = 0; i < useItemButtons.length; i++){
+								useItemButtons[i].setFont(defaultFont);
+								useItemButtons[i].addActionListener(useItemAction);
+								add(useItemButtons[i], "wrap, width 90%, align center");
+							}
 							JButton saveButton = new JButton("Save & Quit");
 							saveButton.setFont(defaultFont);
 							saveButton.addActionListener(new ActionListener(){
@@ -194,7 +206,9 @@ public class OptionPane extends JPanel {
 									}
 								});
 								stats[i].setEditable(false);
+								stats[i].setHorizontalAlignment(SwingConstants.CENTER);
 								statLabels[i].setFont(defaultFont);
+								statLabels[i].setHorizontalAlignment(SwingConstants.CENTER);
 								stats[i].setFont(defaultFont);
 								add(statLabels[i], "gapleft 5%, growx");
 								add(stats[i], "growx");
@@ -230,6 +244,7 @@ public class OptionPane extends JPanel {
 								@Override
 								public void actionPerformed(ActionEvent e) {
 									Main.interpretText(((JButton) e.getSource()).getText());
+									canSwitchMode = true;
 								}
 							};
 							for(Point portalCoords : mainGame.world.discoveredPortals){

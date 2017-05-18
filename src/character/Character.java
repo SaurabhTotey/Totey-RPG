@@ -29,7 +29,6 @@ public class Character implements Serializable{
 	public Affinity[] affinities = Affinity.makeAffinities();
 	public Item armor;
 	public Item pet;
-	public int potions;
 	
 	/**
 	 * The constructor for any character object
@@ -131,17 +130,6 @@ public class Character implements Serializable{
 		attack[0] = attack[1];
 		defense[0] = defense[1];
 		speed[0] = speed[1];
-	}
-	
-	/**
-	 * Using a potion restores 1/10 of the user's max health and reduces the number of potions the user has
-	 * If the user's use of a potion would put them over maximum health, instead, they are healed to maximum health
-	 */
-	public void usePotion(){
-		if(this.potions > 0){
-			this.health[0] = (this.health[0] + ((int) (this.health[1] / 10)) > health[1])? this.health[1] : (int) (this.health[1] / 10);
-			this.potions--;
-		}
 	}
 	
 	/**

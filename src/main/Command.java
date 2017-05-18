@@ -79,6 +79,7 @@ public class Command {
 		allCommands.remove("doNothing", emptyCommand);
 		emptyCommand.new help();
 		emptyCommand.new getLocation();
+		emptyCommand.new useItem();
 		if(Main.main.testingMode){
 			emptyCommand.new refresh();
 			emptyCommand.new gainExperience();
@@ -86,6 +87,7 @@ public class Command {
 			emptyCommand.new buffStats();
 			emptyCommand.new betterSetLocation();
 			emptyCommand.new betterGetLocation();
+			emptyCommand.new giveItem();
 		}
 		String[] args = command.split(" ");
 		try{
@@ -265,6 +267,52 @@ public class Command {
 				Main.main.world.get(chunkCoords[0], chunkCoords[1]).terrain[chunkCoords[2]][chunkCoords[3]] = Maze.tileNameToTile.get(command[3]).representation; //Made it get the string of the tile from the hashmap given the string to make sure that an actual tile was placed
 			}else{
 				throw new Error();
+			}
+		}
+	}
+	
+	/**
+	 * The command to use items such as potions or bombs
+	 * USAGE: "use [itemToUse]"
+	 */
+	public class useItem extends Command{
+		public useItem(){
+			super("use", "Allows the player to use a specified item", "itemToUse, amount");
+		}
+		@Override
+		public void executeCommand(String[] command) throws InterruptedException{
+			super.executeCommand(command);
+			int runNum = 1;
+			try{
+				runNum = Integer.parseInt(command[2]);
+			}catch(Exception e){
+				
+			}
+			for(int i = 0; i < runNum; i++){
+				Main.main.mainPlayer.stringToItem.get(command[1]).apply(false);
+			}
+		}
+	}
+	
+	/**
+	 * The command to give the player items such as potions or bombs
+	 * USAGE: "give [itemToGive] [amount]"
+	 */
+	public class giveItem extends Command{
+		public giveItem(){
+			super("give", "Gives the player the specified item", "itemToGive, amount");
+		}
+		@Override
+		public void executeCommand(String[] command) throws InterruptedException{
+			super.executeCommand(command);
+			int runNum = 1;
+			try{
+				runNum = Integer.parseInt(command[2]);
+			}catch(Exception e){
+				
+			}
+			for(int i = 0; i < runNum; i++){
+				Main.main.mainPlayer.stringToItem.get(command[1]).apply(true);
 			}
 		}
 	}

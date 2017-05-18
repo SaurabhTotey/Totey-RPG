@@ -31,7 +31,7 @@ public class PlayerPane extends JPanel {
 		PLAYER_NAME("Name"), PLAYER_RACES("Race"), PLAYER_EXPERIENCE("Experience"), PLAYER_LEVEL("Level"), PLAYER_HEALTH("Health"), PLAYER_DEFENSE("Defense"), PLAYER_ATTACK("Attack"), PLAYER_SPEED("Speed"),
 		PLYAER_EARTH_AFFINITY("Earth"), PLAYER_FIRE_AFFINITY("Fire"), PLAYER_WATER_AFFINITY("Water"), PLAYER_DARKNESS_AFFINITY("Darkness"),
 		PLAYER_LIGHT_AFFINITY("Light"), PLAYER_CHAOS_AFFINITY("Chaos"), PLAYER_ORDER_AFFINITY("Order"), PLAYER_PET("Pet"), PLAYER_POTIONS("Potions"),
-		PLAYER_ARMOR("Armor"), PLAYER_BOMBS("Bombs");
+		PLAYER_ARMOR("Armor"), PLAYER_BOMBS("Bombs"), PLAYER_TELEPORT_POTIONS("TPPotions");
 		
 		/**
 		 * What the value and titles for the enums will be
@@ -117,6 +117,15 @@ public class PlayerPane extends JPanel {
 		this.add(playerInfoPanes.get(PlayerStat.PLAYER_DEFENSE)[1], "growx");
 		this.add(playerInfoPanes.get(PlayerStat.PLAYER_SPEED)[0], "");
 		this.add(playerInfoPanes.get(PlayerStat.PLAYER_SPEED)[1], "growx, pushx, wrap, gapright 5%");
+		JPanel itemPanel = new JPanel(new MigLayout("fill"));
+		itemPanel.setBackground(this.getBackground());
+		itemPanel.add(playerInfoPanes.get(PlayerStat.PLAYER_BOMBS)[0], "gapleft 5%, growx");
+		itemPanel.add(playerInfoPanes.get(PlayerStat.PLAYER_BOMBS)[1], "growx");
+		itemPanel.add(playerInfoPanes.get(PlayerStat.PLAYER_POTIONS)[0], "growx");
+		itemPanel.add(playerInfoPanes.get(PlayerStat.PLAYER_POTIONS)[1], "growx");
+		itemPanel.add(playerInfoPanes.get(PlayerStat.PLAYER_TELEPORT_POTIONS)[0], "growx");
+		itemPanel.add(playerInfoPanes.get(PlayerStat.PLAYER_TELEPORT_POTIONS)[1], "gapright 5%, growx, wrap");
+		this.add(itemPanel, "growx, span, wrap, align center, width 90%");
 	}
 	
 	/**
@@ -137,6 +146,9 @@ public class PlayerPane extends JPanel {
 					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_ATTACK))[1]).setText(mainGame.mainPlayer.attack[0] + " / " + mainGame.mainPlayer.attack[1]);
 					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_DEFENSE))[1]).setText(mainGame.mainPlayer.defense[0] + " / " + mainGame.mainPlayer.defense[1]);
 					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_SPEED))[1]).setText(mainGame.mainPlayer.speed[0] + " / " + mainGame.mainPlayer.speed[1]);
+					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_BOMBS))[1]).setText("" + mainGame.mainPlayer.bombs);
+					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_POTIONS))[1]).setText("" + mainGame.mainPlayer.potions);
+					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_TELEPORT_POTIONS))[1]).setText("" + mainGame.mainPlayer.tpPotions);
 				}catch(NullPointerException e){
 					
 				}
