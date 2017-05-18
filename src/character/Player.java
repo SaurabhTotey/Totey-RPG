@@ -3,6 +3,9 @@
  */
 package character;
 
+import display.OptionPane.OptionsPaneOptions;
+import main.Main;
+
 /**
  * @author Saurabh Totey
  *
@@ -32,6 +35,32 @@ public class Player extends Character {
 			//TODO destroy surroundings in maze
 			this.bombs--;
 		}
+	}
+	
+	/**
+	 * An altered version of the getLevel function that not only adds experience to the player and
+	 * accordingly updates their stats, but it also automatically displays the stat gambling page
+	 * for each level they got
+	 * @param experienceToAdd the amount of experience to add to the player
+	 * @return the level of the player after adding the given experience
+	 */
+	@Override
+	public int getLevel(int experienceToAdd){
+		int levelBefore = super.getLevel(0);
+		int levelAfter = super.getLevel(experienceToAdd);
+		new Thread(() -> {
+			for(int i = levelBefore; i < levelAfter; i++){
+				Main.main.gui.optionsPane.setOptionsPane(OptionsPaneOptions.STATS_GAMBLE);
+				try {
+					while(Main.main.gui.optionsPane.canSwitchMode == false){
+						Thread.sleep(20);
+					}
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}).start();
+		return levelAfter;
 	}
 
 }

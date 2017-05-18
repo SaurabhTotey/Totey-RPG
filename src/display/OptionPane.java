@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JSpinner.DefaultEditor;
+import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -43,6 +44,7 @@ public class OptionPane extends JPanel {
 	public Font titleFont;
 	public Main mainGame;
 	public OptionsPaneOptions mode;
+	public volatile boolean canSwitchMode = true;
 
 	/**
 	 * Makes this optionpane a jpanel with miglayout and with the given color
@@ -66,7 +68,7 @@ public class OptionPane extends JPanel {
 	 * pane is always one of these
 	 */
 	public enum OptionsPaneOptions {
-		DEFAULT("Options"), RACES("Choose race"), STATS_GAMBLE_BIG("Choose Stat"), STATS_GAMBLE_SMALL("Choose Stat"), TELEPORT_OPTIONS("Teleport where?");
+		DEFAULT("Options"), RACES("Choose race"), STATS_GAMBLE("Choose Stat"), TELEPORT_OPTIONS("Teleport where?");
 
 		public String title;
 
@@ -90,6 +92,10 @@ public class OptionPane extends JPanel {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
+					if(!canSwitchMode){
+						return;
+					}
+					canSwitchMode = false;
 					mode = type;
 					removeAll();
 					JLabel optionsTitle = new JLabel(type.title);
@@ -146,7 +152,7 @@ public class OptionPane extends JPanel {
 								}
 							});
 							add(saveButton, "width 90%, align center, wrap");
-							//TODO add save and quit button
+							canSwitchMode = true;
 							break;
 						case RACES:
 							JButton[] options = {new JButton("Human"), new JButton("Robot"), new JButton("Shadow"), new JButton("Turtle"), new JButton("Bird")};
@@ -160,12 +166,64 @@ public class OptionPane extends JPanel {
 								button.setFont(defaultFont);
 								add(button, "width 90%!, align center, wrap");
 							}
+							canSwitchMode = true;
 							break;
-						case STATS_GAMBLE_BIG:
-							//TODO big stats gambling on optionspane
-							break;
-						case STATS_GAMBLE_SMALL:
-							//TODO small stats gambling on optionspane
+						case STATS_GAMBLE:
+							canSwitchMode = false;
+							JLabel[] statLabels = {new JLabel("Health"), new JLabel("Attack"), new JLabel("Defense"), new JLabel("Speed")};
+							JTextField[] stats = new JTextField[statLabels.length];
+							JButton[] confirmStatButtons = new JButton[statLabels.length];
+							for(int i = 0; i < statLabels.length; i++){
+								stats[i] = new JTextField();
+								confirmStatButtons[i] = new JButton("Confirm");
+								confirmStatButtons[i].addActionListener(new ActionListener(){
+									@Override
+									public void actionPerformed(ActionEvent arg0) {
+										int index = -1;
+										for(int i = 0; i < statLabels.length; i++){
+											if(arg0.getSource().equals(confirmStatButtons[i])){
+												index = i;
+											}
+										}
+										int toAdd = Integer.parseInt(stats[index].getText());
+										int[] stat = mainGame.mainPlayer.getStat(statLabels[index].getText());
+										stat[0] += toAdd;
+										stat[1] += toAdd;
+										canSwitchMode = true;
+										setOptionsPane(OptionsPaneOptions.DEFAULT);
+									}
+								});
+								stats[i].setEditable(false);
+								statLabels[i].setFont(defaultFont);
+								stats[i].setFont(defaultFont);
+								add(statLabels[i], "gapleft 5%, growx");
+								add(stats[i], "growx");
+								add(confirmStatButtons[i], "gapright 5%, growx, wrap");
+							}
+							Point[] weightsVsRolls = {new Point(2, 10), new Point(3, 8), new Point(4, 6), new Point(5, 4), new Point(-1, 2), new Point(10, 1)}; // Point x is roll, point y is weight
+							new Thread(() -> 
+							{
+								int largestWeight = 0;
+								for(Point weightAndRoll : weightsVsRolls){
+									largestWeight = ((int) weightAndRoll.getY() > largestWeight)? (int) weightAndRoll.getY() : largestWeight;
+								}
+								while(mode == OptionsPaneOptions.STATS_GAMBLE){
+									long startTime = System.currentTimeMillis();
+									for(int i = 0; i < stats.length; i++){
+										int[] roll;
+										do{
+											roll = new int[]{(int) (Math.random() * stats.length), (int) (Math.random() * largestWeight)};
+										}while(weightsVsRolls[roll[0]].getY() < roll[1]);
+										stats[i].setText("" + (int) weightsVsRolls[roll[0]].getX());
+									}
+									long endTime = System.currentTimeMillis();
+									try{
+										Thread.sleep(300 - endTime + startTime);
+									}catch(InterruptedException e){
+										
+									}
+								}
+							}).start();
 							break;
 						case TELEPORT_OPTIONS:
 							ActionListener sendContents = new ActionListener(){
@@ -184,11 +242,13 @@ public class OptionPane extends JPanel {
 							cancelButton.setFont(defaultFont);
 							cancelButton.addActionListener(sendContents);
 							add(cancelButton, "width 90%, align center, wrap");
+							canSwitchMode = true;
 							break;
 					}
 				}
 			});
 		}catch(Exception e){
+			this.setOptionsPane(OptionsPaneOptions.DEFAULT);
 		}
 	}
 

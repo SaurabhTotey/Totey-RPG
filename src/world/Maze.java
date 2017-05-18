@@ -78,7 +78,7 @@ public class Maze extends HashMap<String, Chunk>{
 	 * Player location is stored in an array of length 4 where the location is represented as
 	 * {chunkX, chunkY, playerX, playerY}
 	 */
-	public int[] playerLocation = new int[4];
+	public volatile int[] playerLocation = new int[4];
 	public Tile lastSteppedOn = Tile.EMPTY;
 	public ArrayList<Point> discoveredPortals = new ArrayList<Point>();
 	public static int displayWidth = 51;

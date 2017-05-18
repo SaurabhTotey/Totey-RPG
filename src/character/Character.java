@@ -4,6 +4,7 @@
 package character;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.function.Function;
 
 /**
@@ -24,6 +25,7 @@ public class Character implements Serializable{
 	public int[] attack = new int[2];
 	public int[] defense = new int[2];
 	public int[] speed = new int[2];
+	private HashMap<String, int[]> stringToStat = new HashMap<String, int[]>();
 	public Affinity[] affinities = Affinity.makeAffinities();
 	public Item armor;
 	public Item pet;
@@ -140,6 +142,19 @@ public class Character implements Serializable{
 			this.health[0] = (this.health[0] + ((int) (this.health[1] / 10)) > health[1])? this.health[1] : (int) (this.health[1] / 10);
 			this.potions--;
 		}
+	}
+	
+	/**
+	 * Takes a string and returns that stat of the character
+	 * @param statToGet the name of the character's statistic to get
+	 */
+	public int[] getStat(String statToGet){
+		this.stringToStat.put("Health", this.health);
+		this.stringToStat.put("Attack", this.attack);
+		this.stringToStat.put("Defense", this.defense);
+		this.stringToStat.put("Speed", this.speed);
+		return this.stringToStat.get(statToGet);
+		
 	}
 
 }

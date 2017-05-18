@@ -40,7 +40,7 @@ public class SelectWorldDisplay {
 				//This part makes the frame, sizes and centers it, and sets it's layout
 				JFrame frame = new JFrame("TOTEY RPG");
 				try {
-				    frame.setIconImage(ImageIO.read(new File("images/MainIcon.png")));
+				    frame.setIconImage(ImageIO.read(new File("res/MainIcon.png")));
 				}
 				catch (IOException exc) {
 				    exc.printStackTrace();

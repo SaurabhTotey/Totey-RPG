@@ -162,11 +162,6 @@ public class Main implements Serializable{
 	}
 	
 	/**
-	 * Another waitForInput method that also takes in a thread
-	 * Is used for when the method should be running in another thread
-	 */
-	
-	/**
 	 * This function handles all incoming text by either saving it as instancedata or by attempting to interpret commands
 	 * This allows for cheaty functionality to those who know the commands and are on testing mode
 	 * Mostly used for testing, but it is used for getting text input during certain parts of story (if you want to do this, use the waitForInput() function, as it correctly calls on this function)
