@@ -9,6 +9,9 @@ import display.OptionPane.OptionsPaneOptions;
 import main.Main;
 import world.Maze;
 import world.Maze.Direction;
+import world.Maze.Tile;
+import world.StepAction;
+import world.StepAction.teleportWithPortal;
 
 /**
  * @author Saurabh Totey
@@ -50,8 +53,12 @@ public class Player extends Character {
 			}else if(tpPotions <= 0){
 				return tpPotions;
 			}
-			Main.main.gui.optionsPane.setOptionsPane(OptionsPaneOptions.TELEPORT_OPTIONS);
-			Main.main.gui.optionsPane.canSwitchMode = false;
+			try {
+				StepAction.initAllStepActions();
+				((teleportWithPortal) StepAction.tileActions.get(Tile.PORTAL.representation)).performAction();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			tpPotions--;
 			return tpPotions;
 		});

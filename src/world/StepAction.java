@@ -118,38 +118,38 @@ public class StepAction{
 		@Override
 		public void performAction(int xCoordinate, int yCoordinate) throws InterruptedException{
 			super.performAction(xCoordinate, yCoordinate);
-			new Thread(new Runnable(){
-				@Override
-				public void run(){
-					if(Main.main == null || Main.main.world == null){
-						return;
-					}
-					Point portalLocation = new Point(xCoordinate, yCoordinate);
-					if(!Main.main.world.discoveredPortals.contains(portalLocation)){
-						Main.main.world.discoveredPortals.add(portalLocation);
-					}
-					Main.log("To which coordinates will you teleport to?");
-					Main.main.gui.optionsPane.setOptionsPane(OptionsPaneOptions.TELEPORT_OPTIONS);
-					String desiredLocationToGo;
-					try {
-						desiredLocationToGo = Main.waitForInput(true);
-					} catch (InterruptedException e1) {
-						desiredLocationToGo = "Cancel";
-					}
-					try{
-						String[] coords = desiredLocationToGo.substring(1, desiredLocationToGo.length() - 1).split(", ");
-						Point toTeleportTo = new Point(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]));
-						if(Main.main.world.discoveredPortals.contains(toTeleportTo)){
-							Main.main.world.movePlayerTo(new int[]{(int) toTeleportTo.getX(), (int) toTeleportTo.getY()});
-							Main.log("You teleported to the teleporter at (" + (int) toTeleportTo.getX() + ", " + (int) toTeleportTo.getY() + ")");
-						}else{
-							throw new Exception();
-						}
-					}catch(Exception e){
-						Main.log("You decided not to teleport");
-					}
-					Main.main.gui.optionsPane.setOptionsPane(OptionsPaneOptions.DEFAULT);
+			if(Main.main == null || Main.main.world == null){
+				return;
+			}
+			Point portalLocation = new Point(xCoordinate, yCoordinate);
+			if(!Main.main.world.discoveredPortals.contains(portalLocation)){
+				Main.main.world.discoveredPortals.add(portalLocation);
+			}
+			performAction();
+		}
+		public void performAction() throws InterruptedException{
+			new Thread(() -> {
+				Main.log("To which coordinates will you teleport to?");
+				Main.main.gui.optionsPane.setOptionsPane(OptionsPaneOptions.TELEPORT_OPTIONS);
+				String desiredLocationToGo;
+				try {
+					desiredLocationToGo = Main.waitForInput(true);
+				} catch (InterruptedException e1) {
+					desiredLocationToGo = "Cancel";
 				}
+				try{
+					String[] coords = desiredLocationToGo.substring(1, desiredLocationToGo.length() - 1).split(", ");
+					Point toTeleportTo = new Point(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]));
+					if(Main.main.world.discoveredPortals.contains(toTeleportTo)){
+						Main.main.world.movePlayerTo(new int[]{(int) toTeleportTo.getX(), (int) toTeleportTo.getY()});
+						Main.log("You teleported to the teleporter at (" + (int) toTeleportTo.getX() + ", " + (int) toTeleportTo.getY() + ")");
+					}else{
+						throw new Exception();
+					}
+				}catch(Exception e){
+					Main.log("You decided not to teleport");
+				}
+				Main.main.gui.optionsPane.setOptionsPane(OptionsPaneOptions.DEFAULT);
 			}).start();
 		}
 	}
