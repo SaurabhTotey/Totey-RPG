@@ -312,7 +312,7 @@ public class Command {
 				
 			}
 			for(int i = 0; i < runNum; i++){
-				Main.main.mainPlayer.stringToItem.get(command[1]).apply(true);
+				Main.main.mainPlayer.stringToItem.get(command[1].toLowerCase()).apply(true);
 			}
 		}
 	}

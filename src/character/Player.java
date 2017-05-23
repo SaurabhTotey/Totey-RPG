@@ -3,6 +3,7 @@
  */
 package character;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.function.Function;
 import display.OptionPane.OptionsPaneOptions;
@@ -32,7 +33,8 @@ public class Player extends Character {
 	 */
 	public Player(String name, Race initialRace) {
 		super(name, initialRace, 1);
-		stringToItem.put("bomb", (Boolean add) -> {
+		//TODO lambdas not serializable
+		stringToItem.put("bomb", (Function<Boolean, Integer> & Serializable)(Boolean add) -> {
 			if(add){
 				bombs++;
 				return bombs;
@@ -46,7 +48,7 @@ public class Player extends Character {
 			bombs--;
 			return bombs;
 		});
-		stringToItem.put("tppotion", (Boolean add) -> {
+		stringToItem.put("tppotion", (Function<Boolean, Integer> & Serializable)(Boolean add) -> {
 			if(add){
 				tpPotions++;
 				return tpPotions;
@@ -62,7 +64,7 @@ public class Player extends Character {
 			tpPotions--;
 			return tpPotions;
 		});
-		stringToItem.put("potion", (Boolean add) -> {
+		stringToItem.put("potion", (Function<Boolean, Integer> & Serializable)(Boolean add) -> {
 			if(add){
 				potions++;
 				return potions;
