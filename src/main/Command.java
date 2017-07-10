@@ -5,6 +5,7 @@ package main;
 
 import java.util.HashMap;
 
+import character.Player;
 import character.Race;
 import world.Maze;
 import world.Maze.Tile;
@@ -289,7 +290,7 @@ public class Command {
 				
 			}
 			for(int i = 0; i < runNum; i++){
-				Main.main.mainPlayer.stringToItem.get(command[1]).apply(false);
+				Main.main.mainPlayer.stringToItem.get(command[1]).apply(Player.ItemUsage.USE);
 			}
 		}
 	}
@@ -312,7 +313,7 @@ public class Command {
 				
 			}
 			for(int i = 0; i < runNum; i++){
-				Main.main.mainPlayer.stringToItem.get(command[1].toLowerCase()).apply(true);
+				Main.main.mainPlayer.stringToItem.get(command[1].toLowerCase()).apply(Player.ItemUsage.ADD);
 			}
 		}
 	}

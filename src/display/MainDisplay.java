@@ -163,6 +163,7 @@ public class MainDisplay {
 				logArea.setFont(defaultFont);
 				logArea.setEditable(false);
 				logArea.setLineWrap(true);
+				logArea.setWrapStyleWord(true);
 				frame.add(logPane, "dock south, height 25%!, width 100%!");
 				redirectSystemStreams();
 

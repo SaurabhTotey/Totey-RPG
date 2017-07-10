@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import character.Player;
 import main.Main;
 import net.miginfocom.swing.MigLayout;
 
@@ -146,9 +147,9 @@ public class PlayerPane extends JPanel {
 					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_ATTACK))[1]).setText(mainGame.mainPlayer.attack[0] + " / " + mainGame.mainPlayer.attack[1]);
 					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_DEFENSE))[1]).setText(mainGame.mainPlayer.defense[0] + " / " + mainGame.mainPlayer.defense[1]);
 					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_SPEED))[1]).setText(mainGame.mainPlayer.speed[0] + " / " + mainGame.mainPlayer.speed[1]);
-					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_BOMBS))[1]).setText("" + mainGame.mainPlayer.bombs);
-					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_POTIONS))[1]).setText("" + mainGame.mainPlayer.potions);
-					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_TELEPORT_POTIONS))[1]).setText("" + mainGame.mainPlayer.tpPotions);
+					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_BOMBS))[1]).setText("" + mainGame.mainPlayer.stringToItem.get("bomb").apply(Player.ItemUsage.GET));
+					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_POTIONS))[1]).setText("" + mainGame.mainPlayer.stringToItem.get("potion").apply(Player.ItemUsage.GET));
+					((JTextField) (playerInfoPanes.get(PlayerStat.PLAYER_TELEPORT_POTIONS))[1]).setText("" + mainGame.mainPlayer.stringToItem.get("tppotion").apply(Player.ItemUsage.GET));
 				}catch(NullPointerException e){
 					
 				}
