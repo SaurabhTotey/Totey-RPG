@@ -160,7 +160,7 @@ public class OptionPane extends JPanel {
 							saveButton.addActionListener(new ActionListener(){
 								@Override
 								public void actionPerformed(ActionEvent e) {
-									mainGame.gui.quitProcedure.run();
+									Main.quit();
 								}
 							});
 							add(saveButton, "width 90%, align center, wrap");

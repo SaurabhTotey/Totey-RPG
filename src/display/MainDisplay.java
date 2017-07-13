@@ -15,10 +15,8 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
@@ -57,25 +55,6 @@ public class MainDisplay {
 	public Font titleFont;
 	public Font defaultFont;
 	public Main mainGame;
-	public Runnable quitProcedure = () -> 
-	{
-		Main.log("Saving game!");
-		try{
-			File whereToSave = new File(FileSystemView.getFileSystemView().getDefaultDirectory().getPath() + "\\My Games\\ToteyRPG\\Saves\\" + mainGame.gameIdentifier + ".save");
-			if(!whereToSave.exists()){
-				whereToSave.getParentFile().mkdirs();
-			}
-			FileOutputStream fileOut = new FileOutputStream(whereToSave.getPath());
-			ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
-			objectOut.writeObject(mainGame);
-			Main.log("Game has been saved!");
-			objectOut.close();
-			fileOut.close();
-		}catch(IOException er){
-			er.printStackTrace();
-		}
-		System.exit(0);
-	};
 	
 	/**
 	 * These variables keep track of indexes of user inputs
@@ -189,7 +168,7 @@ public class MainDisplay {
 					public void windowOpened(WindowEvent e) {}
 					@Override
 					public void windowClosing(WindowEvent e) {
-						quitProcedure.run();
+						Main.quit();
 					}
 					@Override
 					public void windowClosed(WindowEvent e) {}

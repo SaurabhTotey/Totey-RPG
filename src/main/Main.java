@@ -3,11 +3,7 @@
  */
 package main;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -52,7 +48,6 @@ public class Main implements Serializable{
 	 * The main object
 	 * this holds the entire game in one object
 	 * this can be serialized and saved to later be resumed
-	 * TODO fix that when the user closes before construction, they don't get a name
 	 * @throws InterruptedException
 	 * @throws InvocationTargetException 
 	 */
@@ -179,5 +174,31 @@ public class Main implements Serializable{
 			uninterpretedText = incoming;
 		}
 	}
+
+    /**
+     * The procedure for saving the game (if it exists) and closing all threads
+     */
+	public static void quit(){
+        if(Main.main != null) {
+            Main.log("Saving game!");
+            try {
+                File whereToSave = new File(FileSystemView.getFileSystemView().getDefaultDirectory().getPath() + "\\My Games\\ToteyRPG\\Saves\\" + Main.main.gameIdentifier + ".save");
+                if (!whereToSave.exists()) {
+                    whereToSave.getParentFile().mkdirs();
+                }
+                FileOutputStream fileOut = new FileOutputStream(whereToSave.getPath());
+                ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+                objectOut.writeObject(Main.main);
+                Main.log("Game has been saved!");
+                objectOut.close();
+                fileOut.close();
+            } catch (IOException er) {
+                er.printStackTrace();
+            }
+            System.exit(0);
+        }
+        Main.log("Game can't be saved as it is null... Was the construction finished?");
+        System.exit(126);
+    }
 	
 }
